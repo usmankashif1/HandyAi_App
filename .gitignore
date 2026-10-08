@@ -13,10 +13,12 @@ expo-env.d.ts
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
 *.mobileprovision
+credentials.json
 
 # Metro
 .metro-health-check*
@@ -25,16 +27,27 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*.log
 
-# macOS
+# operating system files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# certificates and private keys
 *.pem
 
-# local env files
-.env*.local
+# environment files and secrets
+.env*
+!.env.example
+!.env.*.example
 
 # typescript
 *.tsbuildinfo
+
+# local caches and editor files
+.npm/
+.idea/
 
 example
 
