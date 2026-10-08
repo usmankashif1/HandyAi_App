@@ -1,22 +1,17 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import {
-    KeyboardAvoidingView,
-    Platform,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-    useWindowDimensions,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, TextInput, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
+import AppButton from '../../components/AppButton';
+import AppText from '../../components/AppText';
+import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
-import { Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { RS } from '../../core/utils/responsive';
 import type { RootStackParamList } from '../../navigation/root/root.types';
+
+
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Setup'>;
 type FormValues = {
@@ -63,8 +58,8 @@ const SetupField = ({
     keyboardType = 'default',
     autoCapitalize = 'sentences',
 }: FieldProps) => (
-    <View style={styles.fieldGroup}>
-        <Text style={styles.fieldLabel}>{label}</Text>
+    <Container style={styles.fieldGroup}>
+        <AppText style={styles.fieldLabel}>{label}</AppText>
         <TextInput
             style={[styles.input, error ? styles.inputError : null]}
             value={value}
@@ -78,18 +73,18 @@ const SetupField = ({
             accessibilityHint={error}
             returnKeyType="next"
         />
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-    </View>
+        {error ? <AppText style={styles.errorText}>{error}</AppText> : null}
+    </Container>
 );
 
 const SetupScreen = ({ navigation }: Props) => {
     const { width } = useWindowDimensions();
     const [step, setStep] = useState(1);
     const [values, setValues] = useState<FormValues>({
-        fullName: '',
-        email: '',
-        address: '',
-        postcode: '',
+        fullName: 'test user',
+        email: 'test@example.com',
+        address: '123 Test Street',
+        postcode: 'TEST 123',
         notes: '',
     });
     const [errors, setErrors] = useState<FormErrors>({});
@@ -158,11 +153,11 @@ const SetupScreen = ({ navigation }: Props) => {
         if (step === 1) {
             return (
                 <>
-                    <Text style={styles.title}>Personal Details</Text>
-                    <Text style={styles.subtitle}>
+                    <AppText style={styles.title}>Personal Details</AppText>
+                    <AppText style={styles.subtitle}>
                         Tell us a bit about yourself so we can provide the best experience.
-                    </Text>
-                    <View style={styles.fields}>
+                    </AppText>
+                    <Container style={styles.fields}>
                         <SetupField
                             label="Full Name"
                             placeholder="Enter your full name"
@@ -195,7 +190,7 @@ const SetupScreen = ({ navigation }: Props) => {
                             onChangeText={(value) => updateField('postcode', value)}
                             autoCapitalize="characters"
                         />
-                    </View>
+                    </Container>
                 </>
             );
         }
@@ -203,21 +198,21 @@ const SetupScreen = ({ navigation }: Props) => {
         if (step === 2) {
             return (
                 <>
-                    <Text style={styles.title}>Household Notes</Text>
-                    <Text style={styles.subtitle}>
+                    <AppText style={styles.title}>Household Notes</AppText>
+                    <AppText style={styles.subtitle}>
                         Add helpful details for your providers. You can leave this blank and add notes later.
-                    </Text>
-                    <View style={styles.notesCard}>
-                        <View style={styles.notesIcon}>
-                            <Text style={styles.notesIconText}>i</Text>
-                        </View>
-                        <View style={styles.notesContent}>
-                            <Text style={styles.notesTitle}>Useful things to include</Text>
+                    </AppText>
+                    <Container style={styles.notesCard}>
+                        <Container style={styles.notesIcon}>
+                            <AppText style={styles.notesIconText}>i</AppText>
+                        </Container>
+                        <Container style={styles.notesContent}>
+                            <AppText style={styles.notesTitle}>Useful things to include</AppText>
                             {['Entry codes', 'Key arrangements', 'Gate access', 'Pet notes', 'Special instructions'].map((item) => (
-                                <Text key={item} style={styles.noteExample}>•  {item}</Text>
+                                <AppText key={item} style={styles.noteExample}>•  {item}</AppText>
                             ))}
-                        </View>
-                    </View>
+                        </Container>
+                    </Container>
                     <TextInput
                         style={styles.notesInput}
                         value={values.notes}
@@ -234,26 +229,26 @@ const SetupScreen = ({ navigation }: Props) => {
 
         return (
             <>
-                <Text style={styles.title}>Set up your payment</Text>
-                <Text style={styles.subtitle}>
+                <AppText style={styles.title}>Set up your payment</AppText>
+                <AppText style={styles.subtitle}>
                     Save a payment method for faster, easier bookings. You can do this later.
-                </Text>
-                <View style={styles.paymentCard}>
-                    <Text style={styles.stripeWordmark}>stripe</Text>
-                    <Text style={styles.paymentHeading}>Save a card securely</Text>
-                    <Text style={styles.paymentDescription}>
+                </AppText>
+                <Container style={styles.paymentCard}>
+                    <AppText style={styles.stripeWordmark}>stripe</AppText>
+                    <AppText style={styles.paymentHeading}>Save a card securely</AppText>
+                    <AppText style={styles.paymentDescription}>
                         Your payment details are encrypted and handled securely.
-                    </Text>
-                    <View style={styles.emptyPayment}>
-                        <Text style={styles.emptyPaymentTitle}>No payment method saved</Text>
-                        <Text style={styles.emptyPaymentDescription}>
+                    </AppText>
+                    <Container style={styles.emptyPayment}>
+                        <AppText style={styles.emptyPaymentTitle}>No payment method saved</AppText>
+                        <AppText style={styles.emptyPaymentDescription}>
                             A saved card will appear here when payment setup is available.
-                        </Text>
-                    </View>
-                </View>
-                <Text style={styles.infoMessage}>
+                        </AppText>
+                    </Container>
+                </Container>
+                <AppText style={styles.infoMessage}>
                     Payment setup is not connected yet. Skip for now to finish setup.
-                </Text>
+                </AppText>
             </>
         );
     };
@@ -270,9 +265,9 @@ const SetupScreen = ({ navigation }: Props) => {
                 style={styles.keyboardView}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
-                <View style={styles.page}>
-                    <View style={styles.header}>
-                        <Pressable
+                <Container style={styles.page}>
+                    <Container style={styles.header}>
+                        <AppButton
                             onPress={handleBack}
                             style={styles.backButton}
                             accessibilityRole="button"
@@ -280,19 +275,19 @@ const SetupScreen = ({ navigation }: Props) => {
                             hitSlop={8}
                         >
                             <BackIcon />
-                        </Pressable>
-                        <Text style={styles.stepLabel}>Step {step} of {TOTAL_STEPS}</Text>
-                        <View style={styles.headerSpacer} />
-                    </View>
+                        </AppButton>
+                        <AppText style={styles.stepLabel}>Step {step} of {TOTAL_STEPS}</AppText>
+                        <Container style={styles.headerSpacer} />
+                    </Container>
 
-                    <View
+                    <Container
                         style={styles.progressTrack}
                         accessibilityRole="progressbar"
                         accessibilityValue={{ min: 1, max: TOTAL_STEPS, now: step }}
                         accessibilityLabel={`Setup step ${step} of ${TOTAL_STEPS}`}
                     >
-                        <View style={[styles.progressFill, { width: `${(step / TOTAL_STEPS) * 100}%` }]} />
-                    </View>
+                        <Container style={[styles.progressFill, { width: `${(step / TOTAL_STEPS) * 100}%` }]} />
+                    </Container>
 
                     <ScrollView
                         style={styles.scrollView}
@@ -306,10 +301,10 @@ const SetupScreen = ({ navigation }: Props) => {
                         {stepContent()}
                     </ScrollView>
 
-                    <View style={styles.footer}>
+                    <Container style={styles.footer}>
                         {step < TOTAL_STEPS ? (
                             <>
-                                <Pressable
+                                <AppButton
                                     style={[
                                         styles.nextButton,
                                         !canContinue && styles.nextButtonDisabled,
@@ -319,39 +314,39 @@ const SetupScreen = ({ navigation }: Props) => {
                                     disabled={!canContinue}
                                     accessibilityState={{ disabled: !canContinue }}
                                 >
-                                    <Text style={styles.nextButtonText}>Next</Text>
-                                </Pressable>
+                                    <AppText style={styles.nextButtonText}>Next</AppText>
+                                </AppButton>
                                 {step === 2 ? (
-                                    <Pressable
+                                    <AppButton
                                         onPress={handleSkipHouseholdNotes}
                                         style={styles.skipButton}
                                         accessibilityRole="button"
                                     >
-                                        <Text style={styles.skipButtonText}>Skip for now</Text>
-                                    </Pressable>
+                                        <AppText style={styles.skipButtonText}>Skip for now</AppText>
+                                    </AppButton>
                                 ) : null}
                             </>
                         ) : (
                             <>
-                                <Pressable
+                                <AppButton
                                     style={[styles.paymentButton, styles.paymentButtonDisabled]}
                                     disabled
                                     accessibilityRole="button"
                                     accessibilityState={{ disabled: true }}
                                 >
-                                    <Text style={styles.paymentButtonDisabledText}>Add Payment Method</Text>
-                                </Pressable>
-                                <Pressable
+                                    <AppText style={styles.paymentButtonDisabledText}>Add Payment Method</AppText>
+                                </AppButton>
+                                <AppButton
                                     onPress={handleFinish}
                                     style={styles.skipButton}
                                     accessibilityRole="button"
                                 >
-                                    <Text style={styles.skipButtonText}>Skip for now</Text>
-                                </Pressable>
+                                    <AppText style={styles.skipButtonText}>Skip for now</AppText>
+                                </AppButton>
                             </>
                         )}
-                    </View>
-                </View>
+                    </Container>
+                </Container>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
@@ -370,18 +365,18 @@ const styles = StyleSheet.create({
     page: {
         flex: 1,
         width: '100%',
-        maxWidth: 560,
+        maxWidth: RS(560),
         alignSelf: 'center',
     },
     header: {
-        minHeight: 44,
+        minHeight: RS(44),
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: Spacing.xl,
     },
     backButton: {
-        width: 40,
-        height: 40,
+        width: RS(40),
+        height: RS(40),
         justifyContent: 'center',
     },
     stepLabel: {
@@ -394,7 +389,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     progressTrack: {
-        height: 4,
+        height: RS(4),
         marginHorizontal: Spacing.xl + 40,
         marginTop: Spacing.xs,
         marginBottom: Spacing.lg,
@@ -421,14 +416,14 @@ const styles = StyleSheet.create({
     title: {
         ...TypeScale.heading,
         color: Colors.textPrimary,
-        fontSize: 27,
-        lineHeight: 34,
+        fontSize: FontSize.heading,
+        lineHeight: RS(34),
         marginBottom: Spacing.xs,
     },
     subtitle: {
         ...TypeScale.body,
         color: Colors.textPrimary,
-        lineHeight: 24,
+        lineHeight: RS(24),
         marginBottom: Spacing.xl,
     },
     fields: {
@@ -439,17 +434,17 @@ const styles = StyleSheet.create({
     },
     fieldLabel: {
         color: Colors.textPrimary,
-        fontSize: 14,
+        fontSize: FontSize.bodySmall,
         fontWeight: '500',
     },
     input: {
-        minHeight: 50,
+        minHeight: RS(50),
         borderWidth: 1,
         borderColor: '#C9CDD4',
         borderRadius: Radii.md,
         paddingHorizontal: Spacing.md,
         color: Colors.textPrimary,
-        fontSize: 16,
+        fontSize: FontSize.body,
         backgroundColor: Colors.background,
     },
     inputError: {
@@ -457,7 +452,7 @@ const styles = StyleSheet.create({
     },
     errorText: {
         color: Colors.failed,
-        fontSize: 13,
+        fontSize: FontSize.bodySmall,
     },
     notesCard: {
         flexDirection: 'row',
@@ -470,8 +465,8 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.md,
     },
     notesIcon: {
-        width: 38,
-        height: 38,
+        width: RS(38),
+        height: RS(38),
         borderRadius: Radii.md,
         alignItems: 'center',
         justifyContent: 'center',
@@ -479,7 +474,7 @@ const styles = StyleSheet.create({
     },
     notesIconText: {
         color: Colors.amberDark,
-        fontSize: 20,
+        fontSize: FontSize.subtitle,
         fontWeight: '700',
     },
     notesContent: {
@@ -488,24 +483,24 @@ const styles = StyleSheet.create({
     },
     notesTitle: {
         color: Colors.textPrimary,
-        fontSize: 16,
+        fontSize: FontSize.body,
         fontWeight: '600',
         marginBottom: Spacing.xxs,
     },
     noteExample: {
         color: Colors.textPrimary,
-        fontSize: 15,
-        lineHeight: 21,
+        fontSize: FontSize.body,
+        lineHeight: RS(21),
     },
     notesInput: {
-        minHeight: 112,
+        minHeight: RS(112),
         borderWidth: 1,
         borderColor: '#C9CDD4',
         borderRadius: Radii.md,
         padding: Spacing.md,
         color: Colors.textPrimary,
-        fontSize: 15,
-        lineHeight: 22,
+        fontSize: FontSize.body,
+        lineHeight: RS(22),
         backgroundColor: Colors.background,
     },
     paymentCard: {
@@ -517,21 +512,21 @@ const styles = StyleSheet.create({
     },
     stripeWordmark: {
         color: '#635BFF',
-        fontSize: 23,
+        fontSize: FontSize.title,
         fontWeight: '800',
-        letterSpacing: -0.8,
+        letterSpacing: RS(-0.8),
         marginBottom: Spacing.md,
     },
     paymentHeading: {
         color: Colors.textPrimary,
-        fontSize: 16,
+        fontSize: FontSize.body,
         fontWeight: '600',
         marginBottom: Spacing.xs,
     },
     paymentDescription: {
         color: Colors.textSecondary,
-        fontSize: 14,
-        lineHeight: 20,
+        fontSize: FontSize.bodySmall,
+        lineHeight: RS(20),
     },
     emptyPayment: {
         alignItems: 'center',
@@ -545,15 +540,15 @@ const styles = StyleSheet.create({
     },
     emptyPaymentTitle: {
         color: Colors.textPrimary,
-        fontSize: 15,
+        fontSize: FontSize.body,
         fontWeight: '600',
         textAlign: 'center',
         marginBottom: Spacing.xs,
     },
     emptyPaymentDescription: {
         color: Colors.textSecondary,
-        fontSize: 13,
-        lineHeight: 19,
+        fontSize: FontSize.bodySmall,
+        lineHeight: RS(19),
         textAlign: 'center',
     },
     infoMessage: {
@@ -561,13 +556,13 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.warningLight,
         borderRadius: Radii.md,
         padding: Spacing.md,
-        fontSize: 14,
-        lineHeight: 20,
+        fontSize: FontSize.bodySmall,
+        lineHeight: RS(20),
         marginTop: Spacing.md,
     },
     footer: {
         width: '100%',
-        maxWidth: 560,
+        maxWidth: RS(560),
         alignSelf: 'center',
         paddingHorizontal: Spacing.xl,
         paddingTop: Spacing.sm,
@@ -575,15 +570,15 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.background,
     },
     nextButton: {
-        minHeight: 54,
+        minHeight: RS(54),
         borderRadius: Radii.pill,
         backgroundColor: Colors.warning,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: Colors.amberDark,
-        shadowOffset: { width: 0, height: 5 },
+        shadowOffset: { width: RS(0), height: RS(5) },
         shadowOpacity: 0.18,
-        shadowRadius: 9,
+        shadowRadius: RS(9),
         elevation: 3,
     },
     nextButtonDisabled: {
@@ -593,11 +588,11 @@ const styles = StyleSheet.create({
     },
     nextButtonText: {
         color: Colors.white,
-        fontSize: 17,
+        fontSize: FontSize.bodyLarge,
         fontWeight: '600',
     },
     paymentButton: {
-        minHeight: 54,
+        minHeight: RS(54),
         borderRadius: Radii.pill,
         backgroundColor: Colors.primaryDark,
         alignItems: 'center',
@@ -608,17 +603,17 @@ const styles = StyleSheet.create({
     },
     paymentButtonDisabledText: {
         color: Colors.textSecondary,
-        fontSize: 16,
+        fontSize: FontSize.body,
         fontWeight: '600',
     },
     skipButton: {
-        minHeight: 44,
+        minHeight: RS(44),
         alignItems: 'center',
         justifyContent: 'center',
     },
     skipButtonText: {
         color: Colors.textPrimary,
-        fontSize: 15,
+        fontSize: FontSize.body,
         textDecorationLine: 'underline',
     },
 });

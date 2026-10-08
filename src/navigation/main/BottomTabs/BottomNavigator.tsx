@@ -1,10 +1,13 @@
+import { FontSize } from '../../../core/theme/designTokens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { Colors } from '../../../core/theme/colors';
 import ChatNavigator from '../../../screens/chat/navigation/ChatNavigator';
 import HistoryNavigator from '../../../screens/history/navigation/HistoryNavigator';
 import ProfileNavigator from '../../../screens/profile/navigation/ProfileNavigator';
 import ScheduleNavigator from '../../../screens/schedule/navigation/ScheduleNavigator';
+
 
 type BottomTabParamList = {
     Chat: undefined;
@@ -58,22 +61,28 @@ const TabIcon = ({ name, color, size }: { name: IconName; color: string; size: n
 
 const BottomNavigator = () => (
     <Tab.Navigator
-        screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarActiveTintColor: Colors.primaryDark,
-            tabBarInactiveTintColor: Colors.textSecondary,
-            tabBarLabelStyle: {
-                fontSize: 11,
-                fontWeight: '500',
-            },
-            tabBarStyle: {
-                backgroundColor: Colors.surface,
-                borderTopColor: Colors.border,
-            },
-            tabBarIcon: ({ color, size }) => (
-                <TabIcon name={route.name} color={color} size={size} />
-            ),
-        })}
+        screenOptions={({ route }) => {
+            const isProviderChatOpen = route.name === 'Schedule'
+                && getFocusedRouteNameFromRoute(route) === 'ProviderChat';
+
+            return {
+                headerShown: false,
+                tabBarActiveTintColor: Colors.primaryDark,
+                tabBarInactiveTintColor: Colors.textSecondary,
+                tabBarLabelStyle: {
+                    fontSize: FontSize.caption,
+                    fontWeight: '500',
+                },
+                tabBarStyle: {
+                    display: isProviderChatOpen ? 'none' : 'flex',
+                    backgroundColor: Colors.surface,
+                    borderTopColor: Colors.border,
+                },
+                tabBarIcon: ({ color, size }) => (
+                    <TabIcon name={route.name} color={color} size={size} />
+                ),
+            };
+        }}
     >
         <Tab.Screen name="Chat" component={ChatNavigator} />
         <Tab.Screen name="Schedule" component={ScheduleNavigator} />

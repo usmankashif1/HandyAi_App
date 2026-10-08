@@ -1,5 +1,6 @@
 import { TextStyle } from "react-native";
-import { RF, RS } from "../utils/responsive";
+import { RF } from "../utils/responsive";
+import { FontSize } from "./designTokens";
 
 export const FontFamily = {
   regular: "Poppins-Regular",
@@ -28,76 +29,75 @@ export type TypographyVariant =
 export const Typography: Record<TypographyVariant, TextStyle> = {
 
   display: {
-    fontSize: RF(48),
+    fontSize: FontSize.display,
     fontFamily: FontFamily.bold,
     lineHeight: RF(56),
   },
 
   heading: {
-    fontSize: RF(28),
+    fontSize: FontSize.heading,
     fontFamily: FontFamily.bold,
     lineHeight: RF(36),
   },
 
   title: {
-    fontSize: RF(24),
+    fontSize: FontSize.title,
     fontFamily: FontFamily.semiBold,
     lineHeight: RF(32),
   },
 
   subtitleOne: {
-    fontSize: RF(22),
+    fontSize: FontSize.subheading,
     fontFamily: FontFamily.semiBold,
     lineHeight: RF(30),
   },
 
   subtitle: {
-    fontSize: RF(20),
+    fontSize: FontSize.subtitle,
     fontFamily: FontFamily.medium,
     lineHeight: RF(28),
   },
 
 
   bodyLarge: {
-    fontSize: RF(18),
+    fontSize: FontSize.bodyLarge,
     fontFamily: FontFamily.medium,
     lineHeight: RF(26),
   },
 
   body: {
-    fontSize: RF(16),
+    fontSize: FontSize.body,
     fontFamily: FontFamily.regular,
     lineHeight: RF(24),
   },
 
   bodySmall: {
-    fontSize: RF(15),
+    fontSize: FontSize.bodySmall,
     fontFamily: FontFamily.regular,
     lineHeight: RF(22),
   },
 
   caption: {
-    fontSize: RF(14),
+    fontSize: FontSize.bodySmall,
     fontFamily: FontFamily.regular,
     lineHeight: RF(20),
   },
 
   label: {
-    fontSize: RF(13),
+    fontSize: FontSize.caption,
     fontFamily: FontFamily.medium,
     lineHeight: RF(18),
   },
 
   small: {
-    fontSize: RF(12),
+    fontSize: FontSize.caption,
     fontFamily: FontFamily.regular,
     lineHeight: RF(16),
   },
 
   VerySmall: {
-    fontSize: RF(10),
+    fontSize: FontSize.caption,
     fontFamily: FontFamily.regular,
     lineHeight: RF(14),
   },
 };
-

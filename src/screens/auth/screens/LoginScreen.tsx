@@ -314,17 +314,16 @@
 //     },
 // });
 
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Container from '../../../components/Container';
+import AppText from '../../../components/AppText';
 
 const LoginScreen = () => {
     return (
-        <View>
-            <Text>LoginScreen</Text>
-        </View>
+        <Container>
+            <AppText>LoginScreen</AppText>
+        </Container>
     )
 }
 
 export default LoginScreen
-
-const styles = StyleSheet.create({})

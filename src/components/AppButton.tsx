@@ -163,10 +163,10 @@ import React from "react";
 import {
     ActivityIndicator,
     Pressable,
+    type PressableProps,
     StyleProp,
     StyleSheet,
     TextStyle,
-    ViewStyle,
 } from "react-native";
 
 import Container from "./Container";
@@ -188,11 +188,19 @@ type ButtonSize =
     | "medium"
     | "large";
 
-interface AppButtonProps {
-
-    title: string;
-
-    onPress?: () => void;
+interface AppButtonProps extends Pick<
+    PressableProps,
+    | "accessibilityHint"
+    | "accessibilityLabel"
+    | "accessibilityRole"
+    | "accessibilityState"
+    | "hitSlop"
+    | "onLongPress"
+    | "testID"
+> {
+    title?: string;
+    children?: React.ReactNode;
+    onPress?: PressableProps["onPress"];
 
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
@@ -215,12 +223,13 @@ interface AppButtonProps {
 
     typography?: TypographyVariant;
 
-    style?: StyleProp<ViewStyle>;
+    style?: PressableProps["style"];
     textStyle?: StyleProp<TextStyle>;
 }
 
 const AppButton: React.FC<AppButtonProps> = ({
     title,
+    children,
 
     onPress,
 
@@ -247,6 +256,13 @@ const AppButton: React.FC<AppButtonProps> = ({
 
     style,
     textStyle,
+    accessibilityHint,
+    accessibilityLabel,
+    accessibilityRole,
+    accessibilityState,
+    hitSlop,
+    onLongPress,
+    testID,
 }) => {
 
     const theme = defaultTheme;
@@ -274,6 +290,7 @@ const AppButton: React.FC<AppButtonProps> = ({
                     ? "body"
                     : "bodySmall"
         );
+    const hasCustomContent = children !== undefined;
 
     //-------------------------------------
     // Colors
@@ -309,40 +326,44 @@ const AppButton: React.FC<AppButtonProps> = ({
         <Pressable
             disabled={disabled || loading}
             onPress={onPress}
-            style={({ pressed }) => ({
-                opacity: pressed
-                    ? 0.8
-                    : disabled
-                        ? 0.45
-                        : 1,
-            })}
+            onLongPress={onLongPress}
+            accessibilityHint={accessibilityHint}
+            accessibilityLabel={accessibilityLabel ?? title}
+            accessibilityRole={accessibilityRole ?? "button"}
+            accessibilityState={{
+                ...accessibilityState,
+                disabled: disabled || loading || accessibilityState?.disabled,
+            }}
+            hitSlop={hitSlop}
+            testID={testID}
+            style={({ pressed }) => [
+                styles.pressable,
+                { alignSelf: fullWidth ? "stretch" : "flex-start" },
+                typeof style === "function" ? style({ pressed }) : style,
+                {
+                    opacity: pressed
+                        ? 0.8
+                        : disabled || loading
+                            ? 0.45
+                            : 1,
+                },
+            ]}
         >
 
             <Container
-                style={[
-                    styles.button,
-
-                    {
-                        backgroundColor: bg,
-
-                        borderColor: border,
-
-                        borderWidth:
-                            variant === "outline"
-                                ? 1
-                                : 0,
-
-                        height: buttonHeight,
-
-                        alignSelf: fullWidth
-                            ? "stretch"
-                            : "flex-start",
-                    },
-
-                    elevated && styles.shadow,
-
-                    style,
-                ]}
+                style={hasCustomContent
+                    ? styles.customContent
+                    : [
+                        styles.button,
+                        {
+                            backgroundColor: bg,
+                            borderColor: border,
+                            borderWidth: variant === "outline" ? 1 : 0,
+                            minHeight: buttonHeight,
+                            alignSelf: fullWidth ? "stretch" : "flex-start",
+                        },
+                        elevated && styles.shadow,
+                    ]}
             >
 
                 {loading ? (
@@ -355,21 +376,25 @@ const AppButton: React.FC<AppButtonProps> = ({
 
                     <>
 
-                        {leftIcon}
-
-                        <AppText
-                            variant={textVariant}
-                            style={[
-                                {
-                                    color: txt,
-                                },
-                                textStyle,
-                            ]}
-                        >
-                            {title}
-                        </AppText>
-
-                        {rightIcon}
+                        {children ?? (
+                            <>
+                                {leftIcon}
+                                {title ? (
+                                    <AppText
+                                        variant={textVariant}
+                                        style={[
+                                            {
+                                                color: txt,
+                                            },
+                                            textStyle,
+                                        ]}
+                                    >
+                                        {title}
+                                    </AppText>
+                                ) : null}
+                                {rightIcon}
+                            </>
+                        )}
 
                     </>
 
@@ -385,6 +410,18 @@ const AppButton: React.FC<AppButtonProps> = ({
 export default React.memo(AppButton);
 
 const styles = StyleSheet.create({
+    pressable: {
+        alignSelf: "stretch",
+    },
+
+    customContent: {
+        flex: 1,
+        alignSelf: "stretch",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: RW(8),
+    },
 
     button: {
 

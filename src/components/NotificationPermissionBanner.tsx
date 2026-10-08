@@ -1,3 +1,4 @@
+import { FontSize } from '../core/theme/designTokens';
 // =====================================================================
 // NEW FILE: src/components/NotificationPermissionBanner.tsx
 //
@@ -14,11 +15,6 @@
 //                      (reuses your canReceivePushNotifications())
 // =====================================================================
 
-import React from 'react';
-import {
-    StyleSheet,
-    TouchableOpacity,
-} from 'react-native';
 import { RH, RS } from '@/core/utils/responsive';
 import {
     canReceivePushNotifications,
@@ -26,8 +22,11 @@ import {
     isIOS,
     isStandalone,
 } from '@/core/utils/webPush';
+import { StyleSheet } from 'react-native';
+import AppButton from './AppButton';
 import AppText from './AppText';
 import Container from './Container';
+
 
 type Props = {
     /** 'default' = never asked, 'denied' = user blocked */
@@ -143,7 +142,7 @@ export const NotificationPermissionBanner = ({
 
                     <Container style={styles.row}>
                         {onDismiss ? (
-                            <TouchableOpacity
+                            <AppButton
                                 onPress={onDismiss}
                                 style={styles.dismissBtn}
                                 hitSlop={{
@@ -160,10 +159,10 @@ export const NotificationPermissionBanner = ({
                                 >
                                     Not now
                                 </AppText>
-                            </TouchableOpacity>
+                            </AppButton>
                         ) : null}
 
-                        <TouchableOpacity
+                        <AppButton
                             onPress={onEnable}
                             disabled={busy}
                             style={[
@@ -176,7 +175,7 @@ export const NotificationPermissionBanner = ({
                                     ? 'Please wait…'
                                     : 'Enable Notifications'}
                             </AppText>
-                        </TouchableOpacity>
+                        </AppButton>
                     </Container>
                 </>
             ) : (
@@ -201,7 +200,7 @@ export const NotificationPermissionBanner = ({
                         ))}
                     </Container>
 
-                    <TouchableOpacity
+                    <AppButton
                         onPress={onVerify}
                         disabled={busy}
                         style={[
@@ -214,7 +213,7 @@ export const NotificationPermissionBanner = ({
                                 ? 'Checking…'
                                 : 'I turned it on — Check again'}
                         </AppText>
-                    </TouchableOpacity>
+                    </AppButton>
                 </>
             )}
         </Container>
@@ -245,13 +244,13 @@ const styles = StyleSheet.create({
         borderColor: '#f59e0b',
     },
     title: {
-        fontSize: RS(15),
+        fontSize: FontSize.body,
         fontWeight: '700',
         color: '#111827',
         marginBottom: RH(6),
     },
     body: {
-        fontSize: RS(13),
+        fontSize: FontSize.bodySmall,
         color: '#374151',
         lineHeight: RH(20),
         marginBottom: RH(12),
@@ -266,7 +265,7 @@ const styles = StyleSheet.create({
         padding: RS(8),
     },
     dismissText: {
-        fontSize: RS(13),
+        fontSize: FontSize.bodySmall,
         color: '#6b7280',
         fontWeight: '600',
     },
@@ -281,7 +280,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         color: '#fff',
-        fontSize: RS(14),
+        fontSize: FontSize.bodySmall,
         fontWeight: '700',
         textAlign: 'center',
     },
@@ -292,13 +291,13 @@ const styles = StyleSheet.create({
         marginBottom: RH(12),
     },
     stepTitle: {
-        fontSize: RS(13),
+        fontSize: FontSize.bodySmall,
         fontWeight: '700',
         color: '#111827',
         marginBottom: RH(6),
     },
     step: {
-        fontSize: RS(12),
+        fontSize: FontSize.caption,
         color: '#374151',
         marginBottom: RH(4),
         lineHeight: RH(18),

@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    StyleSheet,
     Text,
     TextProps,
     StyleProp,
@@ -25,19 +26,24 @@ const AppText: React.FC<AppTextProps> = ({
     allowFontScaling = false,
     ...rest
 }) => {
+    const resolvedStyle = StyleSheet.flatten([
+        Typography[variant],
+        { color, includeFontPadding: true },
+        style,
+    ]);
+    const fontSize = typeof resolvedStyle.fontSize === "number"
+        ? resolvedStyle.fontSize
+        : Typography[variant].fontSize ?? 16;
+    const minimumLineHeight = Math.ceil(fontSize * 1.4);
+
     return (
         <Text
             allowFontScaling={allowFontScaling}
-
-            style={[
-                Typography[variant],
-                {
-                    color,
-                    includeFontPadding: false,
-                    textAlignVertical: "center",
-                },
-                style,
-            ]}
+            style={{
+                ...resolvedStyle,
+                includeFontPadding: true,
+                lineHeight: Math.max(resolvedStyle.lineHeight ?? 0, minimumLineHeight),
+            }}
             {...rest}
         >
             {children}

@@ -31,8 +31,8 @@
 // const styles = StyleSheet.create({})
 
 
-import TabPlaceholderScreen from '../../../components/TabPlaceholderScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
-const ProfileNavigator = () => <TabPlaceholderScreen title="Profile" />;
+const ProfileNavigator = () => <ProfileScreen />;
 
 export default ProfileNavigator;

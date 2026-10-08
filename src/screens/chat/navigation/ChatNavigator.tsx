@@ -1,5 +1,5 @@
-import TabPlaceholderScreen from '../../../components/TabPlaceholderScreen';
+import ChatScreen from '../screens/ChatScreen';
 
-const ChatNavigator = () => <TabPlaceholderScreen title="Chat" />;
+const ChatNavigator = () => <ChatScreen />;
 
 export default ChatNavigator;

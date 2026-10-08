@@ -1,5 +1,5 @@
-import TabPlaceholderScreen from '../../../components/TabPlaceholderScreen';
+import HistoryScreen from '../screens/HistoryScreen';
 
-const HistoryNavigator = () => <TabPlaceholderScreen title="History" />;
+const HistoryNavigator = () => <HistoryScreen />;
 
 export default HistoryNavigator;

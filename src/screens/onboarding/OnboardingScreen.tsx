@@ -1,19 +1,16 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Image, ScrollView, StatusBar, StyleSheet, useWindowDimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-    Image,
-    Pressable,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
-    useWindowDimensions,
-} from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import AppButton from '../../components/AppButton';
+import AppText from '../../components/AppText';
+import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
-import { Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { RS } from '../../core/utils/responsive';
 import type { RootStackParamList } from '../../navigation/root/root.types';
+
+
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding'>;
 
@@ -48,47 +45,47 @@ const OnboardingScreen = ({ navigation }: Props) => {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={[styles.hero, { height: heroHeight }]}>
+                <Container style={[styles.hero, { height: heroHeight }]}>
                     <Image
                         source={require('../../assets/images/Onboarding_Home.jpg')}
                         style={styles.heroImage}
                         resizeMode="cover"
                         accessibilityLabel="Bright, welcoming living room"
                     />
-                    <View style={[styles.heroCaption, { top: insets.top + Spacing.sm }]}>
-                        <Text style={styles.heroCaptionText}>A better home starts here</Text>
-                    </View>
-                </View>
+                    <Container style={[styles.heroCaption, { top: insets.top + Spacing.sm }]}>
+                        <AppText style={styles.heroCaptionText}>A better home starts here</AppText>
+                    </Container>
+                </Container>
 
-                <View style={styles.content}>
-                    <Text style={styles.title}>Your personal home assistant, simplified.</Text>
-                    <Text style={styles.description}>
+                <Container style={styles.content}>
+                    <AppText style={styles.title}>Your personal home assistant, simplified.</AppText>
+                    <AppText style={styles.description}>
                         Book cleaning, handyman, electrical, and plumbing with a single prompt.
-                    </Text>
+                    </AppText>
 
-                    <View style={styles.actions}>
-                        <Pressable
+                    <Container style={styles.actions}>
+                        <AppButton
                             style={styles.primaryButton}
                             accessibilityRole="button"
                             onPress={() => navigation.navigate('Setup')}
                         >
-                            <Text style={styles.primaryButtonText}>Continue with Email</Text>
-                        </Pressable>
-                        <View style={styles.secondaryButton} accessibilityRole="button">
+                            <AppText style={styles.primaryButtonText}>Continue with Email</AppText>
+                        </AppButton>
+                        <Container style={styles.secondaryButton} accessibilityRole="button">
                             <GoogleMark />
-                            <Text style={styles.secondaryButtonText}>Continue with Google</Text>
-                        </View>
-                        <View style={styles.secondaryButton} accessibilityRole="button">
+                            <AppText style={styles.secondaryButtonText}>Continue with Google</AppText>
+                        </Container>
+                        <Container style={styles.secondaryButton} accessibilityRole="button">
                             <AppleMark />
-                            <Text style={styles.secondaryButtonText}>Continue with Apple</Text>
-                        </View>
-                    </View>
+                            <AppText style={styles.secondaryButtonText}>Continue with Apple</AppText>
+                        </Container>
+                    </Container>
 
-                    <Text style={styles.legal}>
-                        By continuing, you agree to our <Text style={styles.legalLink}>Terms</Text>
-                        {' '}and <Text style={styles.legalLink}>Privacy Policy</Text>.
-                    </Text>
-                </View>
+                    <AppText style={styles.legal}>
+                        By continuing, you agree to our <AppText style={styles.legalLink}>Terms</AppText>
+                        {' '}and <AppText style={styles.legalLink}>Privacy Policy</AppText>.
+                    </AppText>
+                </Container>
             </ScrollView>
         </SafeAreaView>
     );
@@ -127,7 +124,7 @@ const styles = StyleSheet.create({
     },
     heroCaptionText: {
         color: Colors.white,
-        fontSize: 13,
+        fontSize: FontSize.bodySmall,
         fontWeight: '600',
     },
     content: {
@@ -137,41 +134,41 @@ const styles = StyleSheet.create({
     title: {
         ...TypeScale.heading,
         color: Colors.primaryDark,
-        fontSize: 30,
-        lineHeight: 36,
-        letterSpacing: -0.7,
+        fontSize: FontSize.heroTitle,
+        lineHeight: RS(36),
+        letterSpacing: RS(-0.7),
         marginBottom: Spacing.sm,
     },
     description: {
         ...TypeScale.body,
         color: Colors.textPrimary,
-        fontSize: 16,
-        lineHeight: 24,
+        fontSize: FontSize.body,
+        lineHeight: RS(24),
     },
     actions: {
         gap: Spacing.sm,
         marginTop: 'auto',
     },
     primaryButton: {
-        minHeight: 54,
+        minHeight: RS(54),
         borderRadius: Radii.pill,
         backgroundColor: Colors.primaryDark,
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: Spacing.lg,
         shadowColor: Colors.primaryDark,
-        shadowOffset: { width: 0, height: 5 },
+        shadowOffset: { width: RS(0), height: RS(5) },
         shadowOpacity: 0.16,
-        shadowRadius: 10,
+        shadowRadius: RS(10),
         elevation: 3,
     },
     primaryButtonText: {
         color: Colors.white,
-        fontSize: 16,
+        fontSize: FontSize.body,
         fontWeight: '600',
     },
     secondaryButton: {
-        minHeight: 50,
+        minHeight: RS(50),
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -182,20 +179,22 @@ const styles = StyleSheet.create({
     },
     secondaryButtonText: {
         color: Colors.textPrimary,
-        fontSize: 15,
+        fontSize: FontSize.body,
         fontWeight: '500',
     },
     legal: {
         ...TypeScale.caption,
         color: Colors.textSecondary,
         textAlign: 'center',
-        fontSize: 12,
-        lineHeight: 18,
+        fontSize: FontSize.caption,
+        lineHeight: RS(18),
         marginTop: Spacing.md,
     },
     legalLink: {
         color: Colors.primaryDark,
         fontWeight: '600',
+        fontSize: FontSize.caption,
+
     },
     heroImage: {
         width: '100%',

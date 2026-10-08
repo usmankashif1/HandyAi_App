@@ -1,17 +1,16 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
-import {
-    ActivityIndicator,
-    StatusBar,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
+import AppText from '../../components/AppText';
+import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
-import { Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
+import { RS } from '../../core/utils/responsive';
 import type { RootStackParamList } from '../../navigation/root/root.types';
+
+
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
@@ -30,11 +29,11 @@ const SplashScreen = ({ navigation }: Props) => {
         <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
             <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
 
-            <View style={styles.brandArea}>
-                <View style={styles.brand}>
-                    <View style={styles.mark}>
-                        <View style={[styles.halo, styles.haloOuter]} />
-                        <View style={[styles.halo, styles.haloInner]} />
+            <Container style={styles.brandArea}>
+                <Container style={styles.brand}>
+                    <Container style={styles.mark}>
+                        <Container style={[styles.halo, styles.haloOuter]} />
+                        <Container style={[styles.halo, styles.haloInner]} />
                         <Svg width={144} height={144} viewBox="0 0 160 160" accessibilityLabel="Handy AI house mark">
                             <Path
                                 d="M28 130V78a10 10 0 0 1 3-7l42-42a10 10 0 0 1 14 0l42 42a10 10 0 0 1 3 7v52"
@@ -56,21 +55,21 @@ const SplashScreen = ({ navigation }: Props) => {
                                 fill={Colors.amber}
                             />
                         </Svg>
-                    </View>
+                    </Container>
 
-                    <Text style={styles.title}>Handy AI</Text>
-                    <Text style={styles.tagline}>Your home. Our AI.</Text>
-                </View>
-            </View>
+                    <AppText style={styles.title}>Handy AI</AppText>
+                    <AppText style={styles.tagline}>Your home. Our AI.</AppText>
+                </Container>
+            </Container>
 
-            <View style={styles.loading}>
-                <Text style={styles.loadingText}>
+            <Container style={styles.loading}>
+                <AppText style={styles.loadingText}>
                     Loading your smart home assistant...
-                </Text>
-                <View style={styles.spinner}>
+                </AppText>
+                <Container style={styles.spinner}>
                     <ActivityIndicator size="small" color={Colors.primary} />
-                </View>
-            </View>
+                </Container>
+            </Container>
         </SafeAreaView>
     );
 };
@@ -93,8 +92,8 @@ const styles = StyleSheet.create({
         transform: [{ translateY: -Spacing.sm }],
     },
     mark: {
-        width: 240,
-        height: 220,
+        width: RS(240),
+        height: RS(220),
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: Spacing.xs,
@@ -104,14 +103,14 @@ const styles = StyleSheet.create({
         borderRadius: Radii.pill,
     },
     haloOuter: {
-        width: 220,
-        height: 220,
+        width: RS(220),
+        height: RS(220),
         backgroundColor: Colors.amberLight,
         opacity: 0.28,
     },
     haloInner: {
-        width: 164,
-        height: 164,
+        width: RS(164),
+        height: RS(164),
         backgroundColor: Colors.amber,
         opacity: 0.1,
     },
@@ -119,16 +118,16 @@ const styles = StyleSheet.create({
         ...TypeScale.heading,
         color: Colors.primaryDark,
         fontWeight: '700',
-        fontSize: 48,
-        lineHeight: 58,
-        letterSpacing: -1.5,
+        fontSize: FontSize.display,
+        lineHeight: RS(58),
+        letterSpacing: RS(-1.5),
         marginTop: Spacing.xs,
     },
     tagline: {
         ...TypeScale.subtitle,
         color: Colors.textSecondary,
-        fontSize: 18,
-        lineHeight: 28,
+        fontSize: FontSize.bodyLarge,
+        lineHeight: RS(28),
         marginTop: Spacing.xs,
     },
     loading: {
@@ -142,8 +141,8 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.lg,
     },
     spinner: {
-        width: 48,
-        height: 48,
+        width: RS(48),
+        height: RS(48),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: Radii.pill,
