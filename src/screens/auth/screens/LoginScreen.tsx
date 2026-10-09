@@ -1,329 +1,255 @@
-// import AppText from '@/src/components/AppText';
-// import Container from '@/src/components/Container';
-// import Screen from '@/src/components/Screen';
-// import { saveToken } from '@/src/core/utils/tokenStorage';
-// import { useAppDispatch } from '@/src/store/hooks';
-// import { setOrganization, setToken, setUser } from '@/src/store/slices/organizationSlice';
-// import { setTheme } from '@/src/store/slices/themeSlice';
-// import React, { useState } from 'react';
-// import {
-//     ActivityIndicator,
-//     Alert,
-//     KeyboardAvoidingView,
-//     Platform,
-//     ScrollView,
-//     StyleSheet,
-//     TextInput,
-//     TouchableOpacity,
-// } from 'react-native';
-
-// const API_URL = 'http://178.128.54.158:4000';
-
-// const LoginScreen = () => {
-//     const [email, setEmail] = useState('test107@yopmail.com');
-//     const [password, setPassword] = useState('Qwerty123!');
-//     const [loading, setLoading] = useState(false);
-//     const [showPassword, setShowPassword] = useState(false);
-
-//     const dispatch = useAppDispatch();
-
-//     const handleLogin = async () => {
-//         // ── Validation ──────────────────────────
-//         if (!email.trim()) {
-//             Alert.alert('Error', 'Please enter your email');
-//             return;
-//         }
-//         if (!password.trim()) {
-//             Alert.alert('Error', 'Please enter your password');
-//             return;
-//         }
-
-//         setLoading(true);
-
-//         try {
-//             const response = await fetch(`${API_URL}/api/v1/auth/member/login`, {
-//                 method: 'POST',
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//                 body: JSON.stringify({
-//                     email: email.trim(),
-//                     password: password,
-//                 }),
-//             });
-//             const data = await response.json();
-
-//             if (response.ok) {
-//                 const res = data.organization
-//                 const accessToken = typeof data.access_token === 'string' ? data.access_token.trim() : ''
-//                 console.log('Success ✅', 'Login successful!');
-//                 dispatch(setOrganization(res));
-//                 dispatch(setTheme({ primary: res.branding.primary_color, secondary: res.branding.secondary_color, primaryLight: `${res.branding.primary_color}47`, bottomBackgroundColor: `${res.branding.primary_color}15` }));
-//                 dispatch(setToken(accessToken));
-//                 saveToken(accessToken)
-//                 dispatch(setUser(data.member_id));
-//             } else {
-//                 Alert.alert(
-//                     'Login Failed ❌',
-//                     data.message || 'Invalid email or password'
-//                 );
-//             }
-//         } catch (error: any) {
-//             console.error('Login error:', error);
-//             Alert.alert('Error', 'Cannot connect to server. Please try again.');
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     return (
-//         <Screen>
-//             <KeyboardAvoidingView
-//                 style={styles.flex}
-//                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//             >
-//                 <ScrollView
-//                     contentContainerStyle={styles.scrollContent}
-//                     keyboardShouldPersistTaps="handled"
-//                     showsVerticalScrollIndicator={false}
-//                 >
-//                     {/* ── Header ──────────────────────── */}
-//                     <Container style={styles.headerContainer}>
-//                         <AppText style={styles.emoji}>💪</AppText>
-//                         <AppText style={styles.title}>Welcome Back</AppText>
-//                         <AppText style={styles.subtitle}>
-//                             Sign in to your account
-//                         </AppText>
-//                     </Container>
-
-//                     {/* ── Form ────────────────────────── */}
-//                     <Container style={styles.formContainer}>
-//                         {/* Email */}
-//                         <Container style={styles.inputGroup}>
-//                             <AppText style={styles.label}>Email</AppText>
-//                             <TextInput
-//                                 style={styles.input}
-//                                 placeholder="Enter your email"
-//                                 placeholderTextColor="#9ca3af"
-//                                 value={email}
-//                                 onChangeText={setEmail}
-//                                 keyboardType="email-address"
-//                                 autoCapitalize="none"
-//                                 autoCorrect={false}
-//                                 editable={!loading}
-//                             />
-//                         </Container>
-
-//                         {/* Password */}
-//                         <Container style={styles.inputGroup}>
-//                             <AppText style={styles.label}>Password</AppText>
-//                             <Container style={styles.passwordContainer}>
-//                                 <TextInput
-//                                     style={styles.passwordInput}
-//                                     placeholder="Enter your password"
-//                                     placeholderTextColor="#9ca3af"
-//                                     value={password}
-//                                     onChangeText={setPassword}
-//                                     secureTextEntry={!showPassword}
-//                                     autoCapitalize="none"
-//                                     editable={!loading}
-//                                 />
-//                                 <TouchableOpacity
-//                                     style={styles.eyeButton}
-//                                     onPress={() => setShowPassword(!showPassword)}
-//                                 >
-//                                     <AppText style={styles.eyeIcon}>
-//                                         {showPassword ? '🙈' : '👁️'}
-//                                     </AppText>
-//                                 </TouchableOpacity>
-//                             </Container>
-//                         </Container>
-
-//                         {/* Forgot Password */}
-//                         <TouchableOpacity style={styles.forgotButton}>
-//                             <AppText style={styles.forgotText}>
-//                                 Forgot Password?
-//                             </AppText>
-//                         </TouchableOpacity>
-
-//                         {/* Login Button */}
-//                         <TouchableOpacity
-//                             style={[
-//                                 styles.loginButton,
-//                                 loading && styles.loginButtonDisabled,
-//                             ]}
-//                             onPress={handleLogin}
-//                             disabled={loading}
-//                             activeOpacity={0.8}
-//                         >
-//                             {loading ? (
-//                                 <ActivityIndicator color="#fff" />
-//                             ) : (
-//                                 <AppText style={styles.loginButtonText}>
-//                                     Sign In
-//                                 </AppText>
-//                             )}
-//                         </TouchableOpacity>
-//                     </Container>
-
-//                     {/* ── Footer ─────────────────────── */}
-//                     <Container style={styles.footer}>
-//                         <AppText style={styles.footerText}>
-//                             Don't have an account?{' '}
-//                         </AppText>
-//                         <TouchableOpacity>
-//                             <AppText style={styles.signUpText}>Sign Up</AppText>
-//                         </TouchableOpacity>
-//                     </Container>
-//                 </ScrollView>
-//             </KeyboardAvoidingView>
-//         </Screen>
-//     );
-// };
-
-// export default LoginScreen;
-
-// const styles = StyleSheet.create({
-//     flex: {
-//         flex: 1,
-//     },
-//     scrollContent: {
-//         flexGrow: 1,
-//         justifyContent: 'center',
-//         padding: 24,
-//     },
-
-//     // Header
-//     headerContainer: {
-//         alignItems: 'center',
-//         marginBottom: 36,
-//     },
-//     emoji: {
-//         fontSize: 48,
-//         marginBottom: 16,
-//     },
-//     title: {
-//         fontSize: 28,
-//         fontWeight: '800',
-//         color: '#111827',
-//         marginBottom: 6,
-//     },
-//     subtitle: {
-//         fontSize: 15,
-//         color: '#6b7280',
-//         fontWeight: '500',
-//     },
-
-//     // Form
-//     formContainer: {
-//         marginBottom: 24,
-//     },
-//     inputGroup: {
-//         marginBottom: 18,
-//     },
-//     label: {
-//         fontSize: 14,
-//         fontWeight: '600',
-//         color: '#374151',
-//         marginBottom: 8,
-//     },
-//     input: {
-//         backgroundColor: '#f9fafb',
-//         borderWidth: 1.5,
-//         borderColor: '#e5e7eb',
-//         borderRadius: 12,
-//         paddingHorizontal: 16,
-//         paddingVertical: 14,
-//         fontSize: 15,
-//         color: '#111827',
-//     },
-
-//     // Password
-//     passwordContainer: {
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         backgroundColor: '#f9fafb',
-//         borderWidth: 1.5,
-//         borderColor: '#e5e7eb',
-//         borderRadius: 12,
-//     },
-//     passwordInput: {
-//         flex: 1,
-//         paddingHorizontal: 16,
-//         paddingVertical: 14,
-//         fontSize: 15,
-//         color: '#111827',
-//     },
-//     eyeButton: {
-//         paddingHorizontal: 14,
-//         paddingVertical: 14,
-//     },
-//     eyeIcon: {
-//         fontSize: 18,
-//     },
-
-//     // Forgot
-//     forgotButton: {
-//         alignSelf: 'flex-end',
-//         marginBottom: 24,
-//     },
-//     forgotText: {
-//         fontSize: 13,
-//         color: '#6366f1',
-//         fontWeight: '600',
-//     },
-
-//     // Login Button
-//     loginButton: {
-//         backgroundColor: '#6366f1',
-//         borderRadius: 14,
-//         paddingVertical: 16,
-//         alignItems: 'center',
-//         shadowColor: '#6366f1',
-//         shadowOffset: { width: 0, height: 4 },
-//         shadowOpacity: 0.3,
-//         shadowRadius: 8,
-//         elevation: 5,
-//     },
-//     loginButtonDisabled: {
-//         backgroundColor: '#a5b4fc',
-//         shadowOpacity: 0,
-//         elevation: 0,
-//     },
-//     loginButtonText: {
-//         color: '#fff',
-//         fontSize: 16,
-//         fontWeight: '700',
-//         letterSpacing: 0.3,
-//     },
-
-//     // Footer
-//     footer: {
-//         flexDirection: 'row',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//     },
-//     footerText: {
-//         fontSize: 14,
-//         color: '#6b7280',
-//     },
-//     signUpText: {
-//         fontSize: 14,
-//         color: '#6366f1',
-//         fontWeight: '700',
-//     },
-// });
-
-import React from 'react'
-import Container from '../../../components/Container';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
+import {
+    ActivityIndicator,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AppButton from '../../../components/AppButton';
 import AppText from '../../../components/AppText';
+import { Colors } from '../../../core/theme/colors';
+import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designTokens';
+import { RS } from '../../../core/utils/responsive';
+import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
+import { useAuthSession } from '../AuthSessionContext';
+import { authenticateLocalAccount } from '../auth.storage';
+import SignUpField from '../components/SignUpField';
+import Svg, { Path } from 'react-native-svg';
 
-const LoginScreen = () => {
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+
+const LoginScreen = ({ navigation }: Props) => {
+    const { signIn } = useAuthSession();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState<string | undefined>();
+    const [passwordError, setPasswordError] = useState<string | undefined>();
+    const [isSigningIn, setIsSigningIn] = useState(false);
+
+    const handleSignIn = async () => {
+        const normalizedEmail = email.trim();
+        let isValid = true;
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+            setEmailError('Enter a valid email address.');
+            isValid = false;
+        } else {
+            setEmailError(undefined);
+        }
+
+        if (!password) {
+            setPasswordError('Enter your password.');
+            isValid = false;
+        } else {
+            setPasswordError(undefined);
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        setIsSigningIn(true);
+        try {
+            const account = await authenticateLocalAccount(normalizedEmail, password);
+            if (!account) {
+                Alert.alert('Sign-in failed', 'The email or password is incorrect.');
+                return;
+            }
+
+            await signIn(account);
+        } catch (error) {
+            console.error('Unable to sign in with the local account:', error);
+            Alert.alert(
+                'Could not sign in',
+                error instanceof Error ? error.message : 'Please try again.',
+            );
+        } finally {
+            setIsSigningIn(false);
+        }
+    };
+
+
+
+
+
+
+    const BackIcon = () => (
+        <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24" accessibilityElementsHidden>
+            <Path
+                d="m15 18-6-6 6-6"
+                fill="none"
+                stroke={Colors.textPrimary}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </Svg>
+    );
+
+
+
     return (
-        <Container>
-            <AppText>LoginScreen</AppText>
-        </Container>
-    )
-}
+        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+            <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
+            <KeyboardAvoidingView
+                style={styles.keyboardView}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                        accessibilityRole="button"
+                    >
+                        <BackIcon />
+                        <AppText style={styles.backText}>Back</AppText>
+                    </TouchableOpacity>
 
-export default LoginScreen
+                    <View style={styles.heading}>
+                        <AppText style={styles.title}>Welcome back</AppText>
+                        <AppText style={styles.subtitle}>Log in to your Handy AI account.</AppText>
+                    </View>
+
+                    <View style={styles.form}>
+                        <SignUpField
+                            label="Email Address"
+                            placeholder="Enter your email"
+                            icon="email"
+                            value={email}
+                            onChangeText={(value) => {
+                                setEmail(value);
+                                setEmailError(undefined);
+                            }}
+                            error={emailError}
+                            keyboardType="email-address"
+                            accessibilityLabel="Email address"
+                        />
+                        <SignUpField
+                            label="Password"
+                            placeholder="Enter your password"
+                            icon="lock"
+                            value={password}
+                            onChangeText={(value) => {
+                                setPassword(value);
+                                setPasswordError(undefined);
+                            }}
+                            error={passwordError}
+                            secure
+                            accessibilityLabel="Password"
+                        />
+                    </View>
+
+                    <AppButton
+                        style={[styles.loginButton, isSigningIn && styles.loginButtonDisabled]}
+                        onPress={handleSignIn}
+                        disabled={isSigningIn}
+                        accessibilityRole="button"
+                    >
+                        {isSigningIn ? (
+                            <ActivityIndicator color={Colors.white} />
+                        ) : (
+                            <AppText style={styles.loginButtonText}>Log In</AppText>
+                        )}
+                    </AppButton>
+
+                    <AppText style={styles.signupPrompt}>
+                        Don&apos;t have an account?{' '}
+                        <AppText
+                            style={styles.signupLink}
+                            onPress={() => navigation.navigate('SignUp')}
+                            accessibilityRole="link"
+                        >
+                            Create account
+                        </AppText>
+                    </AppText>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
+    );
+};
+
+export default LoginScreen;
+
+const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.background,
+    },
+    keyboardView: {
+        flex: 1,
+    },
+    content: {
+        flexGrow: 1,
+        paddingHorizontal: Spacing.xl,
+        paddingTop: Spacing.sm,
+        paddingBottom: Spacing.xl,
+    },
+    backButton: {
+        minHeight: RS(44),
+        justifyContent: 'center',
+        alignSelf: 'flex-start',
+        flexDirection: "row",
+    },
+    backText: {
+        color: Colors.primaryDark,
+        fontSize: FontSize.bodyLarge,
+        fontWeight: '600',
+    },
+    heading: {
+        marginTop: Spacing.section,
+        marginBottom: Spacing.xxl,
+    },
+    title: {
+        ...TypeScale.heading,
+        color: Colors.primaryDark,
+        fontSize: FontSize.heroTitle,
+        marginBottom: Spacing.xs,
+    },
+    subtitle: {
+        ...TypeScale.body,
+        color: Colors.textSecondary,
+    },
+    form: {
+        marginBottom: Spacing.sm,
+    },
+    loginButton: {
+        minHeight: RS(58),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: Radii.pill,
+        backgroundColor: Colors.primaryDark,
+        marginTop: Spacing.sm,
+    },
+    loginButtonDisabled: {
+        opacity: 0.7,
+    },
+    loginButtonText: {
+        color: Colors.white,
+        fontSize: FontSize.bodyLarge,
+        fontWeight: '600',
+    },
+    signupPrompt: {
+        ...TypeScale.caption,
+        color: Colors.textSecondary,
+        textAlign: 'center',
+        marginTop: Spacing.xl,
+        fontSize: FontSize.bodySmall,
+        fontWeight: '600',
+    },
+    signupLink: {
+        color: Colors.primaryDark,
+        fontSize: FontSize.bodySmall,
+        fontWeight: '600',
+    },
+});

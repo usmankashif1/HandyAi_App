@@ -64,7 +64,7 @@ const HistoryScreen = () => {
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
-            <StatusBar barStyle="dark-content" backgroundColor="#F7F5F1" />
+            <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
             <Container style={styles.header}>
                 <AppText style={styles.title}>Booking History</AppText>
             </Container>

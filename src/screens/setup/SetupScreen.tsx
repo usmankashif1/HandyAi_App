@@ -9,14 +9,13 @@ import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
 import { RS } from '../../core/utils/responsive';
-import type { RootStackParamList } from '../../navigation/root/root.types';
+import type { MainStackParamList } from '../../navigation/main/Stack/main.types';
 
 
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Setup'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'Setup'>;
 type FormValues = {
     fullName: string;
-    email: string;
     address: string;
     postcode: string;
     notes: string;
@@ -24,7 +23,6 @@ type FormValues = {
 type FormErrors = Partial<Record<keyof FormValues, string>>;
 
 const TOTAL_STEPS = 3;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const BackIcon = () => (
     <Svg width={24} height={24} viewBox="0 0 24 24">
@@ -82,16 +80,13 @@ const SetupScreen = ({ navigation }: Props) => {
     const [step, setStep] = useState(1);
     const [values, setValues] = useState<FormValues>({
         fullName: 'test user',
-        email: 'test@example.com',
         address: '123 Test Street',
         postcode: 'TEST 123',
         notes: '',
     });
     const [errors, setErrors] = useState<FormErrors>({});
-    const emailIsValid = EMAIL_PATTERN.test(values.email.trim());
     const personalDetailsAreValid = Boolean(
         values.fullName.trim()
-        && emailIsValid
         && values.address.trim()
         && values.postcode.trim(),
     );
@@ -105,13 +100,6 @@ const SetupScreen = ({ navigation }: Props) => {
         const nextErrors: FormErrors = {};
         if (!values.fullName.trim()) {
             nextErrors.fullName = 'Enter your full name.';
-        }
-
-        const normalizedEmail = values.email.trim();
-        if (!normalizedEmail) {
-            nextErrors.email = 'Enter your email address.';
-        } else if (!EMAIL_PATTERN.test(normalizedEmail)) {
-            nextErrors.email = 'Enter a valid email address.';
         }
 
         if (!values.address.trim()) {
@@ -147,7 +135,7 @@ const SetupScreen = ({ navigation }: Props) => {
         navigation.goBack();
     };
 
-    const handleFinish = () => navigation.replace('Main');
+    const handleFinish = () => navigation.replace('BottomTabs');
 
     const stepContent = () => {
         if (step === 1) {
@@ -165,15 +153,6 @@ const SetupScreen = ({ navigation }: Props) => {
                             error={errors.fullName}
                             onChangeText={(value) => updateField('fullName', value)}
                             autoCapitalize="words"
-                        />
-                        <SetupField
-                            label="Email"
-                            placeholder="you@example.com"
-                            value={values.email}
-                            error={errors.email ?? (values.email && !emailIsValid ? 'Enter a valid email address.' : undefined)}
-                            onChangeText={(value) => updateField('email', value)}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
                         />
                         <SetupField
                             label="Primary Address"

@@ -55,7 +55,7 @@ const bookingGroups: ScheduleBookingGroup[] = [
 
 const ScheduleScreen = ({ navigation }: Props) => (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F7F5ED" />
+        <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
             <AppText style={styles.title}>Your Schedule</AppText>
             {bookingGroups.map((group) => (
@@ -83,8 +83,8 @@ export default ScheduleScreen;
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-               backgroundColor: Colors.background,
-       
+        backgroundColor: Colors.background,
+
     },
     content: {
         paddingHorizontal: RS(20),

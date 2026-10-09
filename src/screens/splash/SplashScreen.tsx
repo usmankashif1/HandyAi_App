@@ -1,5 +1,3 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
@@ -8,71 +6,54 @@ import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
 import { RS } from '../../core/utils/responsive';
-import type { RootStackParamList } from '../../navigation/root/root.types';
 
+const SplashScreen = () => (
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+        <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
 
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Splash'>;
-
-const SPLASH_DURATION_MS = 2500;
-
-const SplashScreen = ({ navigation }: Props) => {
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            navigation.replace('Onboarding');
-        }, SPLASH_DURATION_MS);
-
-        return () => clearTimeout(timeout);
-    }, [navigation]);
-
-    return (
-        <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-            <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
-
-            <Container style={styles.brandArea}>
-                <Container style={styles.brand}>
-                    <Container style={styles.mark}>
-                        <Container style={[styles.halo, styles.haloOuter]} />
-                        <Container style={[styles.halo, styles.haloInner]} />
-                        <Svg width={144} height={144} viewBox="0 0 160 160" accessibilityLabel="Handy AI house mark">
-                            <Path
-                                d="M28 130V78a10 10 0 0 1 3-7l42-42a10 10 0 0 1 14 0l42 42a10 10 0 0 1 3 7v52"
-                                fill="none"
-                                stroke={Colors.primaryDark}
-                                strokeWidth={11}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <Path
-                                d="M119 50V39"
-                                fill="none"
-                                stroke={Colors.primaryDark}
-                                strokeWidth={9}
-                                strokeLinecap="round"
-                            />
-                            <Path
-                                d="M80 73c4 12 9 17 21 21-12 4-17 9-21 21-4-12-9-17-21-21 12-4 17-9 21-21Z"
-                                fill={Colors.amber}
-                            />
-                        </Svg>
-                    </Container>
-
-                    <AppText style={styles.title}>Handy AI</AppText>
-                    <AppText style={styles.tagline}>Your home. Our AI.</AppText>
+        <Container style={styles.brandArea}>
+            <Container style={styles.brand}>
+                <Container style={styles.mark}>
+                    <Container style={[styles.halo, styles.haloOuter]} />
+                    <Container style={[styles.halo, styles.haloInner]} />
+                    <Svg width={144} height={144} viewBox="0 0 160 160" accessibilityLabel="Handy AI house mark">
+                        <Path
+                            d="M28 130V78a10 10 0 0 1 3-7l42-42a10 10 0 0 1 14 0l42 42a10 10 0 0 1 3 7v52"
+                            fill="none"
+                            stroke={Colors.primaryDark}
+                            strokeWidth={11}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                        <Path
+                            d="M119 50V39"
+                            fill="none"
+                            stroke={Colors.primaryDark}
+                            strokeWidth={9}
+                            strokeLinecap="round"
+                        />
+                        <Path
+                            d="M80 73c4 12 9 17 21 21-12 4-17 9-21 21-4-12-9-17-21-21 12-4 17-9 21-21Z"
+                            fill={Colors.amber}
+                        />
+                    </Svg>
                 </Container>
-            </Container>
 
-            <Container style={styles.loading}>
-                <AppText style={styles.loadingText}>
-                    Loading your smart home assistant...
-                </AppText>
-                <Container style={styles.spinner}>
-                    <ActivityIndicator size="small" color={Colors.primary} />
-                </Container>
+                <AppText style={styles.title}>Handy AI</AppText>
+                <AppText style={styles.tagline}>Your home. Our AI.</AppText>
             </Container>
-        </SafeAreaView>
-    );
-};
+        </Container>
+
+        <Container style={styles.loading}>
+            <AppText style={styles.loadingText}>
+                Loading your smart home assistant...
+            </AppText>
+            <Container style={styles.spinner}>
+                <ActivityIndicator size="small" color={Colors.primary} />
+            </Container>
+        </Container>
+    </SafeAreaView>
+);
 
 export default SplashScreen;
 

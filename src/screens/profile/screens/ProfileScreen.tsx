@@ -1,16 +1,18 @@
-import { Image, ScrollView, StatusBar, StyleSheet, useWindowDimensions } from 'react-native';
+import { Alert, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppText from '../../../components/AppText';
 import Container from '../../../components/Container';
 import { Colors } from '../../../core/theme/colors';
 import { FontSize } from '../../../core/theme/designTokens';
 import { RS } from '../../../core/utils/responsive';
+import { useAuthSession } from '../../auth/AuthSessionContext';
 import ProfileIcon from '../components/ProfileIcon';
 import ProfileSettingRow from '../components/ProfileSettingRow';
 
 
 
 const ProfileScreen = () => {
+    const { account, signOut } = useAuthSession();
     const { width } = useWindowDimensions();
     const compact = width < 380;
     const avatarSize = width < 350 ? 80 : compact ? 96 : 112;
@@ -36,10 +38,10 @@ const ProfileScreen = () => {
                     />
                     <Container style={styles.profileInfo}>
                         <AppText style={[styles.name, compact && styles.compactName]} numberOfLines={1}>
-                            Usman Kashif
+                            {account?.fullName ?? 'Handy AI user'}
                         </AppText>
                         <AppText style={[styles.email, compact && styles.compactEmail]} numberOfLines={1}>
-                            usman.kashif@gmail.com
+                            {account?.email ?? ''}
                         </AppText>
                         <Container style={styles.editProfile}>
                             <ProfileIcon name="edit" size={RS(22)} />
@@ -68,10 +70,27 @@ const ProfileScreen = () => {
                     />
                 </Container>
 
-                <Container style={[styles.logoutCard, compact && styles.compactLogoutCard]}>
+                <TouchableOpacity
+                    style={[styles.logoutCard, compact && styles.compactLogoutCard]}
+                    onPress={() => Alert.alert('Log out', 'Are you sure you want to log out?', [
+                        { text: 'Cancel', style: 'cancel' },
+                        {
+                            text: 'Log Out',
+                            style: 'destructive',
+                            onPress: () => {
+                                void signOut().catch((error: unknown) => {
+                                    console.error('Unable to log out:', error);
+                                    Alert.alert('Could not log out', 'Please try again.');
+                                });
+                            },
+                        },
+                    ])}
+                    accessibilityRole="button"
+                    accessibilityLabel="Log out"
+                >
                     <ProfileIcon name="logout" size={RS(30)} />
                     <AppText style={[styles.logoutText, compact && styles.compactLogoutText]}>Log Out</AppText>
-                </Container>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );

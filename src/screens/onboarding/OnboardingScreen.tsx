@@ -8,11 +8,11 @@ import Container from '../../components/Container';
 import { Colors } from '../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
 import { RS } from '../../core/utils/responsive';
-import type { RootStackParamList } from '../../navigation/root/root.types';
+import type { AuthStackParamList } from '../../navigation/auth/auth.types';
 
 
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding'>;
+type Props = NativeStackScreenProps<AuthStackParamList, 'Onboarding'>;
 
 const GoogleMark = () => (
     <Svg width={22} height={22} viewBox="0 0 48 48" accessibilityLabel="Google">
@@ -63,28 +63,47 @@ const OnboardingScreen = ({ navigation }: Props) => {
                         Book cleaning, handyman, electrical, and plumbing with a single prompt.
                     </AppText>
 
-                    <Container style={styles.actions}>
-                        <AppButton
-                            style={styles.primaryButton}
-                            accessibilityRole="button"
-                            onPress={() => navigation.navigate('Setup')}
-                        >
-                            <AppText style={styles.primaryButtonText}>Continue with Email</AppText>
-                        </AppButton>
-                        <Container style={styles.secondaryButton} accessibilityRole="button">
-                            <GoogleMark />
-                            <AppText style={styles.secondaryButtonText}>Continue with Google</AppText>
+                    <Container style={{ justifyContent: "flex-end", flex: 1, }}>
+
+                        <Container style={styles.loginSection}>
+                            <AppText style={styles.accountPrompt}>Already have an account?</AppText>
+                            <AppButton
+                                style={styles.loginButton}
+                                accessibilityRole="button"
+                                onPress={() => navigation.navigate('Login')}
+                            >
+                                <AppText style={styles.loginButtonText}>Log in</AppText>
+                            </AppButton>
                         </Container>
-                        <Container style={styles.secondaryButton} accessibilityRole="button">
-                            <AppleMark />
-                            <AppText style={styles.secondaryButtonText}>Continue with Apple</AppText>
+
+                        <AppText style={styles.createAccountPrompt}>
+                            Don&apos;t have an account? Create one with:
+                        </AppText>
+
+                        <Container style={styles.actions}>
+                            <AppButton
+                                style={styles.primaryButton}
+                                accessibilityRole="button"
+                                onPress={() => navigation.navigate('SignUp')}
+                            >
+                                <AppText style={styles.primaryButtonText}>Continue with Email</AppText>
+                            </AppButton>
+                            <Container style={styles.secondaryButton} accessibilityRole="button">
+                                <GoogleMark />
+                                <AppText style={styles.secondaryButtonText}>Continue with Google</AppText>
+                            </Container>
+                            <Container style={styles.secondaryButton} accessibilityRole="button">
+                                <AppleMark />
+                                <AppText style={styles.secondaryButtonText}>Continue with Apple</AppText>
+                            </Container>
                         </Container>
+
+                        <AppText style={styles.legal}>
+                            By continuing, you agree to our <AppText style={styles.legalLink}>Terms</AppText>
+                            {' '}and <AppText style={styles.legalLink}>Privacy Policy</AppText>.
+                        </AppText>
                     </Container>
 
-                    <AppText style={styles.legal}>
-                        By continuing, you agree to our <AppText style={styles.legalLink}>Terms</AppText>
-                        {' '}and <AppText style={styles.legalLink}>Privacy Policy</AppText>.
-                    </AppText>
                 </Container>
             </ScrollView>
         </SafeAreaView>
@@ -145,9 +164,43 @@ const styles = StyleSheet.create({
         fontSize: FontSize.body,
         lineHeight: RS(24),
     },
+    loginSection: {
+        alignItems: 'center',
+        gap: Spacing.xs,
+        marginTop: Spacing.xxl,
+    },
+    accountPrompt: {
+        ...TypeScale.caption,
+        color: Colors.textPrimary,
+        fontSize: FontSize.bodySmall,
+        fontWeight: 'bold',
+    },
+    loginButton: {
+        minHeight: RS(54),
+        width: '100%',
+        borderWidth: 1,
+        borderColor: Colors.textSecondary,
+        borderRadius: Radii.pill,
+        backgroundColor: Colors.background,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: Spacing.lg,
+    },
+    loginButtonText: {
+        color: Colors.textPrimary,
+        fontSize: FontSize.body,
+        fontWeight: '700',
+    },
+    createAccountPrompt: {
+        ...TypeScale.caption,
+        color: Colors.textPrimary,
+        fontSize: FontSize.bodySmall,
+        textAlign: 'center',
+        marginTop: Spacing.lg,
+    },
     actions: {
         gap: Spacing.sm,
-        marginTop: 'auto',
+        marginTop: Spacing.sm,
     },
     primaryButton: {
         minHeight: RS(54),
@@ -186,14 +239,14 @@ const styles = StyleSheet.create({
         ...TypeScale.caption,
         color: Colors.textSecondary,
         textAlign: 'center',
-        fontSize: FontSize.caption,
+        fontSize: FontSize.bodySmall,
         lineHeight: RS(18),
         marginTop: Spacing.md,
     },
     legalLink: {
         color: Colors.primaryDark,
         fontWeight: '600',
-        fontSize: FontSize.caption,
+        fontSize: FontSize.bodySmall,
 
     },
     heroImage: {
