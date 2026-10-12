@@ -25,6 +25,12 @@
     },
     "plugins": [
       [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Handy AI to use your location to show nearby home services."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#FAFBF6"

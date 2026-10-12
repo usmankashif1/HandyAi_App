@@ -19,9 +19,8 @@ import { Colors } from '../../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designTokens';
 import { RS } from '../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
-import { useAuthSession } from '../AuthSessionContext';
 import SignUpField from '../components/SignUpField';
-import { createLocalAccount } from '../auth.storage';
+import { signUp } from '../auth.api';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignUp'>;
 
@@ -35,6 +34,7 @@ type SignUpValues = {
 type SignUpErrors = Partial<Record<keyof SignUpValues, string>>;
 
 const PASSWORD_RULE = /^(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const EMAIL_RULE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const BackIcon = () => (
     <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24" accessibilityElementsHidden>
@@ -50,7 +50,6 @@ const BackIcon = () => (
 );
 
 const SignUpScreen = ({ navigation }: Props) => {
-    const { signIn } = useAuthSession();
     const [values, setValues] = useState<SignUpValues>({
         fullName: '',
         email: '',
@@ -70,7 +69,7 @@ const SignUpScreen = ({ navigation }: Props) => {
         if (!values.fullName.trim()) {
             nextErrors.fullName = 'Enter your full name.';
         }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+        if (!EMAIL_RULE.test(values.email.trim())) {
             nextErrors.email = 'Enter a valid email address.';
         }
         if (!PASSWORD_RULE.test(values.password)) {
@@ -85,20 +84,23 @@ const SignUpScreen = ({ navigation }: Props) => {
             return;
         }
 
+        if (isCreatingAccount) {
+            return;
+        }
+
         setIsCreatingAccount(true);
         try {
-            const account = {
+            const result = await signUp({
                 fullName: values.fullName.trim(),
                 email: values.email.trim().toLowerCase(),
                 password: values.password,
-            };
-            await createLocalAccount(account);
-            await signIn(account, true);
+            });
+            Alert.alert('Check your email', result.message);
         } catch (error) {
-            console.error('Unable to create the local account:', error);
+            console.error('Unable to sign up:', error);
             Alert.alert(
-                'Could not create account',
-                error instanceof Error ? error.message : 'Please try again.',
+                'Sign up failed',
+                error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
             );
         } finally {
             setIsCreatingAccount(false);
