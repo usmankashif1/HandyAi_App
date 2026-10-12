@@ -18,7 +18,8 @@ import {
     useRef,
     useState,
 } from 'react';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
+import { showInfoToast } from '../utils/toast';
 import {
     createOrGetPushSubscription,
     getCurrentPushSubscription,
@@ -196,7 +197,7 @@ export const usePushPermission = (
                         await registerDevice(subJson);
                     }
                 } else {
-                    Alert.alert(
+                    showInfoToast(
                         'Still blocked',
                         'Notifications are still turned off. ' +
                         'Follow the steps above, then tap ' +

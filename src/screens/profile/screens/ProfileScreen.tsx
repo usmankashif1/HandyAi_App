@@ -5,6 +5,7 @@ import Container from '../../../components/Container';
 import { Colors } from '../../../core/theme/colors';
 import { FontSize } from '../../../core/theme/designTokens';
 import { RS } from '../../../core/utils/responsive';
+import { showErrorToast } from '../../../core/utils/toast';
 import { useAuthSession } from '../../auth/AuthSessionContext';
 import ProfileIcon from '../components/ProfileIcon';
 import ProfileSettingRow from '../components/ProfileSettingRow';
@@ -80,7 +81,7 @@ const ProfileScreen = () => {
                             onPress: () => {
                                 void signOut().catch((error: unknown) => {
                                     console.error('Unable to log out:', error);
-                                    Alert.alert('Could not log out', 'Please try again.');
+                                    showErrorToast('Could not log out', 'Please try again.');
                                 });
                             },
                         },

@@ -10,6 +10,7 @@ import {
 } from 'react';
 import type { PropsWithChildren } from 'react';
 import { Alert, Linking } from 'react-native';
+import { showErrorToast } from '../utils/toast';
 
 type LocationPermissionState = 'requesting' | 'granted' | 'denied' | 'unavailable';
 
@@ -133,7 +134,10 @@ export const LocationPermissionProvider = ({ children }: PropsWithChildren) => {
                             onPress: () => {
                                 void Linking.openSettings().catch((error: unknown) => {
                                     console.error('Unable to open device settings:', error);
-                                    Alert.alert('Unable to open settings', 'Please enable location access in device settings.');
+                                    showErrorToast(
+                                        'Unable to open settings',
+                                        'Please enable location access in device settings.',
+                                    );
                                 });
                             },
                         },

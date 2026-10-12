@@ -1,8 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { PropsWithChildren } from 'react';
+import { setToken } from '../../store/slices/authSlice';
+import { store } from '../../store/store';
 import {
     clearLocalSession,
     createLocalSession,
+    createVerifiedSession,
     readLocalSession,
     type LocalAccount,
     type LocalSession,
@@ -15,6 +18,12 @@ type AuthSessionContextValue = {
     isLoading: boolean;
     initializationError: string | null;
     signIn: (account: LocalAccount, startSetup?: boolean) => Promise<void>;
+    signInWithToken: (
+        token: string,
+        account: Pick<LocalAccount, 'fullName' | 'email'>,
+        startSetup?: boolean,
+    ) => Promise<void>;
+    signInVerified: (token: string, account: Pick<LocalAccount, 'fullName' | 'email'>) => Promise<void>;
     signOut: () => Promise<void>;
     retrySessionRestore: () => void;
 };
@@ -38,6 +47,7 @@ export const AuthSessionProvider = ({ children }: PropsWithChildren) => {
                 const session = await readLocalSession();
                 if (active) {
                     setSession(session);
+                    store.dispatch(setToken(session?.token ?? null));
                 }
             } catch (error) {
                 console.error('Unable to restore the saved session:', error);
@@ -60,12 +70,30 @@ export const AuthSessionProvider = ({ children }: PropsWithChildren) => {
     const signIn = useCallback(async (signedInAccount: LocalAccount, startSetup = false) => {
         const signedInSession = await createLocalSession(signedInAccount);
         setSession(signedInSession);
+        store.dispatch(setToken(signedInSession.token));
         setShouldStartSetup(startSetup);
     }, []);
+
+    const signInWithToken = useCallback(async (
+        token: string,
+        account: Pick<LocalAccount, 'fullName' | 'email'>,
+        startSetup = false,
+    ) => {
+        const verifiedSession = await createVerifiedSession(token, account);
+        setSession(verifiedSession);
+        store.dispatch(setToken(verifiedSession.token));
+        setShouldStartSetup(startSetup);
+    }, []);
+
+    const signInVerified = useCallback(async (
+        token: string,
+        account: Pick<LocalAccount, 'fullName' | 'email'>,
+    ) => signInWithToken(token, account, true), [signInWithToken]);
 
     const signOut = useCallback(async () => {
         await clearLocalSession();
         setSession(null);
+        store.dispatch(setToken(null));
         setShouldStartSetup(false);
     }, []);
 
@@ -83,10 +111,12 @@ export const AuthSessionProvider = ({ children }: PropsWithChildren) => {
             isLoading,
             initializationError,
             signIn,
+            signInWithToken,
+            signInVerified,
             signOut,
             retrySessionRestore,
         }),
-        [session, shouldStartSetup, isLoading, initializationError, signIn, signOut, retrySessionRestore],
+        [session, shouldStartSetup, isLoading, initializationError, signIn, signInWithToken, signInVerified, signOut, retrySessionRestore],
     );
 
     return <AuthSessionContext.Provider value={value}>{children}</AuthSessionContext.Provider>;

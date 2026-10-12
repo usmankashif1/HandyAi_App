@@ -2,7 +2,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
     ActivityIndicator,
-    Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -19,14 +18,28 @@ import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designT
 import { RS } from '../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
 import { useAuthSession } from '../AuthSessionContext';
-import { authenticateLocalAccount } from '../auth.storage';
+import { signIn as signInRequest } from '../auth.api';
 import SignUpField from '../components/SignUpField';
 import Svg, { Path } from 'react-native-svg';
+import { showErrorToast } from '../../../core/utils/toast';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
+const BackIcon = () => (
+    <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24" accessibilityElementsHidden>
+        <Path
+            d="m15 18-6-6 6-6"
+            fill="none"
+            stroke={Colors.textPrimary}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
+
 const LoginScreen = ({ navigation }: Props) => {
-    const { signIn } = useAuthSession();
+    const { signInWithToken } = useAuthSession();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState<string | undefined>();
@@ -34,6 +47,10 @@ const LoginScreen = ({ navigation }: Props) => {
     const [isSigningIn, setIsSigningIn] = useState(false);
 
     const handleSignIn = async () => {
+        if (isSigningIn) {
+            return;
+        }
+
         const normalizedEmail = email.trim();
         let isValid = true;
 
@@ -57,43 +74,24 @@ const LoginScreen = ({ navigation }: Props) => {
 
         setIsSigningIn(true);
         try {
-            const account = await authenticateLocalAccount(normalizedEmail, password);
-            if (!account) {
-                Alert.alert('Sign-in failed', 'The email or password is incorrect.');
-                return;
-            }
-
-            await signIn(account);
+            const result = await signInRequest({
+                email: normalizedEmail.toLowerCase(),
+                password,
+            });
+            await signInWithToken(result.accessToken, {
+                fullName: result.user.fullName,
+                email: result.user.email,
+            });
         } catch (error) {
-            console.error('Unable to sign in with the local account:', error);
-            Alert.alert(
+            console.error('Unable to sign in:', error);
+            showErrorToast(
                 'Could not sign in',
-                error instanceof Error ? error.message : 'Please try again.',
+                error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
             );
         } finally {
             setIsSigningIn(false);
         }
     };
-
-
-
-
-
-
-    const BackIcon = () => (
-        <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24" accessibilityElementsHidden>
-            <Path
-                d="m15 18-6-6 6-6"
-                fill="none"
-                stroke={Colors.textPrimary}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-        </Svg>
-    );
-
-
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -148,6 +146,15 @@ const LoginScreen = ({ navigation }: Props) => {
                             secure
                             accessibilityLabel="Password"
                         />
+                        <View style={styles.forgotPasswordRow}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('ForgotPassword')}
+                                accessibilityRole="button"
+                                accessibilityLabel="Forgot password"
+                            >
+                                <AppText style={styles.forgotPasswordText}>Forgot Password?</AppText>
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     <AppButton
@@ -222,6 +229,17 @@ const styles = StyleSheet.create({
     },
     form: {
         marginBottom: Spacing.sm,
+    },
+    forgotPasswordRow: {
+        alignItems: 'flex-end',
+        marginTop: -Spacing.sm,
+        marginBottom: Spacing.sm,
+    },
+    forgotPasswordText: {
+        color: Colors.primaryDark,
+        fontSize: FontSize.bodySmall,
+        fontWeight: '600',
+        opacity: 0.7,
     },
     loginButton: {
         minHeight: RS(58),

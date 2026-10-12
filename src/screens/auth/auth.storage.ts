@@ -11,7 +11,7 @@ export type LocalAccount = {
 
 export type LocalSession = {
     token: string;
-    account: LocalAccount;
+    account: Pick<LocalAccount, 'fullName' | 'email'>;
 };
 
 const isLocalAccount = (value: unknown): value is LocalAccount => (
@@ -86,12 +86,22 @@ export const readLocalSession = async (): Promise<LocalSession | null> => {
     const normalizedEmail = session.email.toLowerCase();
     const accounts = await readAccounts();
     const account = accounts.find((item) => item.email.toLowerCase() === normalizedEmail);
-    if (!account) {
+    if (account) {
+        return {
+            token: session.token,
+            account: { fullName: account.fullName, email: account.email },
+        };
+    }
+
+    if (!('fullName' in session) || typeof session.fullName !== 'string') {
         await AsyncStorage.removeItem(SESSION_KEY);
         return null;
     }
 
-    return { token: session.token, account };
+    return {
+        token: session.token,
+        account: { fullName: session.fullName, email: normalizedEmail },
+    };
 };
 
 export const createLocalSession = async (account: LocalAccount): Promise<LocalSession> => {
@@ -100,7 +110,29 @@ export const createLocalSession = async (account: LocalAccount): Promise<LocalSe
         email: account.email,
     };
     await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    return { token: session.token, account };
+    return {
+        token: session.token,
+        account: { fullName: account.fullName, email: account.email },
+    };
+};
+
+export const createVerifiedSession = async (
+    token: string,
+    account: Pick<LocalAccount, 'fullName' | 'email'>,
+): Promise<LocalSession> => {
+    const normalizedAccount = {
+        fullName: account.fullName.trim(),
+        email: account.email.trim().toLowerCase(),
+    };
+    if (!token.trim() || !normalizedAccount.fullName || !normalizedAccount.email) {
+        throw new Error('A valid token and account identity are required to start a session.');
+    }
+
+    await AsyncStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify({ token: token.trim(), ...normalizedAccount }),
+    );
+    return { token: token.trim(), account: normalizedAccount };
 };
 
 export const clearLocalSession = async (): Promise<void> => {

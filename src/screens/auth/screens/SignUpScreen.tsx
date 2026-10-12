@@ -1,7 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
-    Alert,
     ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
@@ -21,6 +20,7 @@ import { RS } from '../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
 import SignUpField from '../components/SignUpField';
 import { signUp } from '../auth.api';
+import { showErrorToast } from '../../../core/utils/toast';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'SignUp'>;
 
@@ -90,15 +90,20 @@ const SignUpScreen = ({ navigation }: Props) => {
 
         setIsCreatingAccount(true);
         try {
-            const result = await signUp({
+            const email = values.email.trim().toLowerCase();
+            await signUp({
                 fullName: values.fullName.trim(),
-                email: values.email.trim().toLowerCase(),
+                email,
                 password: values.password,
             });
-            Alert.alert('Check your email', result.message);
+            navigation.navigate('OtpVerify', {
+                email,
+                fullName: values.fullName.trim(),
+                purpose: 'SIGNUP',
+            });
         } catch (error) {
             console.error('Unable to sign up:', error);
-            Alert.alert(
+            showErrorToast(
                 'Sign up failed',
                 error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
             );

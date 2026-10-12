@@ -8,13 +8,16 @@ import StackNavigator from '../main/Stack/StackNavigator';
 import { Colors } from '../../core/theme/colors';
 import AppText from '../../components/AppText';
 import AppButton from '../../components/AppButton';
+import { Provider } from 'react-redux';
+import { useAppSelector } from '../../store/hooks';
+import { store } from '../../store/store';
 
 const SPLASH_DURATION_MS = 2500;
 
 const RootNavigation = () => {
     const [splashComplete, setSplashComplete] = useState(false);
+    const token = useAppSelector((state) => state.auth.token);
     const {
-        token,
         shouldStartSetup,
         isLoading,
         initializationError,
@@ -42,16 +45,18 @@ const RootNavigation = () => {
     }
 
     return (
-        <NavigationContainer>
+        <NavigationContainer key={token ? 'authenticated' : 'unauthenticated'}>
             {token ? <StackNavigator startAtSetup={shouldStartSetup} /> : <AuthNavigator />}
         </NavigationContainer>
     );
 };
 
 const RootNavigator = () => (
-    <AuthSessionProvider>
-        <RootNavigation />
-    </AuthSessionProvider>
+    <Provider store={store}>
+        <AuthSessionProvider>
+            <RootNavigation />
+        </AuthSessionProvider>
+    </Provider>
 );
 
 export default RootNavigator;
