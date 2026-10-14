@@ -1,7 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AuthSessionProvider, useAuthSession } from '../../screens/auth/AuthSessionContext';
 import SplashScreen from '../../screens/splash/SplashScreen';
 import AuthNavigator from '../auth/AuthNavigator';
 import StackNavigator from '../main/Stack/StackNavigator';
@@ -9,25 +8,27 @@ import { Colors } from '../../core/theme/colors';
 import AppText from '../../components/AppText';
 import AppButton from '../../components/AppButton';
 import { Provider } from 'react-redux';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { store } from '../../store/store';
+import { restoreAccessToken } from '../../store/slices/authSlice';
 
 const SPLASH_DURATION_MS = 2500;
 
 const RootNavigation = () => {
     const [splashComplete, setSplashComplete] = useState(false);
-    const token = useAppSelector((state) => state.auth.token);
-    const {
-        shouldStartSetup,
-        isLoading,
-        initializationError,
-        retrySessionRestore,
-    } = useAuthSession();
+    const dispatch = useAppDispatch();
+    const { token, shouldStartSetup, isLoading, initializationError } = useAppSelector(
+        (state) => state.auth,
+    );
 
     useEffect(() => {
         const timeout = setTimeout(() => setSplashComplete(true), SPLASH_DURATION_MS);
         return () => clearTimeout(timeout);
     }, []);
+
+    useEffect(() => {
+        void dispatch(restoreAccessToken());
+    }, [dispatch]);
 
     if (!splashComplete || isLoading) {
         return <SplashScreen />;
@@ -37,7 +38,7 @@ const RootNavigation = () => {
         return (
             <View style={styles.centered}>
                 <AppText style={styles.errorText}>{initializationError}</AppText>
-                <AppButton onPress={retrySessionRestore} style={styles.retryButton}>
+                <AppButton onPress={() => void dispatch(restoreAccessToken())} style={styles.retryButton}>
                     <AppText style={styles.retryText}>Try again</AppText>
                 </AppButton>
             </View>
@@ -53,9 +54,7 @@ const RootNavigation = () => {
 
 const RootNavigator = () => (
     <Provider store={store}>
-        <AuthSessionProvider>
-            <RootNavigation />
-        </AuthSessionProvider>
+        <RootNavigation />
     </Provider>
 );
 

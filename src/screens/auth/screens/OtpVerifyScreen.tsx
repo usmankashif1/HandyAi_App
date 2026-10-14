@@ -17,11 +17,12 @@ import AppButton from '../../../components/AppButton';
 import AppText from '../../../components/AppText';
 import { Colors } from '../../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
+import { RF, RS } from '../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
 import { resendOtp, verifyOtp } from '../auth.api';
-import { useAuthSession } from '../AuthSessionContext';
 import { showErrorToast, showSuccessToast } from '../../../core/utils/toast';
+import { useAppDispatch } from '../../../store/hooks';
+import { signInWithAccessToken } from '../../../store/slices/authSlice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'OtpVerify'>;
 
@@ -58,7 +59,7 @@ const HandyMark = () => (
 const OtpVerifyScreen = ({ navigation, route }: Props) => {
     const { email } = route.params;
     const purpose = route.params.purpose;
-    const { signInVerified } = useAuthSession();
+    const dispatch = useAppDispatch();
     const [code, setCode] = useState('');
     const [error, setError] = useState<string>();
     const [cooldownSeconds, setCooldownSeconds] = useState(RESEND_COOLDOWN_SECONDS);
@@ -92,10 +93,14 @@ const OtpVerifyScreen = ({ navigation, route }: Props) => {
             if (purpose === 'SIGNUP') {
                 const result = await verifyOtp({ email, code, purpose });
                 showSuccessToast('Email verified', result.message);
-                await signInVerified(result.token, {
-                    email,
-                    fullName: route.params.fullName,
-                });
+                await dispatch(signInWithAccessToken({
+                    token: result.token,
+                    account: {
+                        email,
+                        fullName: route.params.fullName,
+                    },
+                    startSetup: true,
+                })).unwrap();
             } else {
                 const result = await verifyOtp({ email, code, purpose });
                 navigation.replace('ChangePassword', { resetToken: result.resetToken });
@@ -339,7 +344,7 @@ const styles = StyleSheet.create({
     },
     digit: {
         color: Colors.textPrimary,
-        fontSize: RS(25),
+        fontSize: RF(25),
         fontWeight: '600',
     },
     hiddenInput: {

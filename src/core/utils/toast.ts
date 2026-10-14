@@ -8,7 +8,7 @@ export const showSuccessToast = (title: string, message?: string): void => {
     });
 };
 
-export const showErrorToast = (title: string, message: string): void => {
+export const showErrorToast = (title: string, message?: string): void => {
     Toast.show({
         type: 'error',
         text1: title,
@@ -16,7 +16,7 @@ export const showErrorToast = (title: string, message: string): void => {
     });
 };
 
-export const showInfoToast = (title: string, message: string): void => {
+export const showInfoToast = (title: string, message?: string): void => {
     Toast.show({
         type: 'info',
         text1: title,

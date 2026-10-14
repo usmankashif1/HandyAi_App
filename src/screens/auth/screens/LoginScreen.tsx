@@ -17,11 +17,12 @@ import { Colors } from '../../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designTokens';
 import { RS } from '../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
-import { useAuthSession } from '../AuthSessionContext';
 import { signIn as signInRequest } from '../auth.api';
 import SignUpField from '../components/SignUpField';
 import Svg, { Path } from 'react-native-svg';
 import { showErrorToast } from '../../../core/utils/toast';
+import { useAppDispatch } from '../../../store/hooks';
+import { signInWithAccessToken } from '../../../store/slices/authSlice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -39,7 +40,7 @@ const BackIcon = () => (
 );
 
 const LoginScreen = ({ navigation }: Props) => {
-    const { signInWithToken } = useAuthSession();
+    const dispatch = useAppDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState<string | undefined>();
@@ -77,11 +78,23 @@ const LoginScreen = ({ navigation }: Props) => {
             const result = await signInRequest({
                 email: normalizedEmail.toLowerCase(),
                 password,
-            });
-            await signInWithToken(result.accessToken, {
-                fullName: result.user.fullName,
-                email: result.user.email,
-            });
+            })
+            // .then((response) => {
+            //     if (response?.isEmailVerified === false) {
+            //         showErrorToast("Please Verify Account");
+            //         navigation.navigate('OtpVerify', {
+            //             email: normalizedEmail.toLowerCase(),
+
+            //         });
+            //     }
+            // });
+            await dispatch(signInWithAccessToken({
+                token: result.accessToken,
+                account: {
+                    fullName: result.user.fullName,
+                    email: result.user.email,
+                },
+            })).unwrap();
         } catch (error) {
             console.error('Unable to sign in:', error);
             showErrorToast(

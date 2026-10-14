@@ -1,153 +1,95 @@
-// import { API_URL } from "@/src/core/utils/config"
-// import { store } from "@/src/store/store"
+import { API_URL } from '../../core/utils/config';
+import type { UserProfile } from './profile.types';
 
-// export type GymAccess = {
-//     id: string
-//     member_id: string
-//     gym_id: string
-//     is_primary: boolean
-//     is_active: boolean
-//     granted_by: string | null
-//     granted_at: string
-//     revoked_at: string | null
-// }
+const isRecord = (value: unknown): value is Record<string, unknown> => (
+    typeof value === 'object' && value !== null
+);
 
-// export type MemberProfile = {
-//     id: string
-//     email: string
-//     full_name: string
-//     phone: string
-//     photo_url: string | null
-//     status: string
-//     pause_start: string | null
-//     resume_date: string | null
-//     created_at: string
-//     gym_access: GymAccess[]
-// }
+const getErrorMessage = (body: unknown): string | undefined => {
+    if (!isRecord(body)) {
+        return undefined;
+    }
 
+    const message = body.message ?? body.error;
+    if (typeof message === 'string' && message.trim()) {
+        return message.trim();
+    }
+    if (Array.isArray(message)) {
+        const messages = message.filter(
+            (item): item is string => typeof item === 'string' && item.trim().length > 0,
+        );
+        return messages.length > 0 ? messages.join('\n') : undefined;
+    }
 
-// type ContactSupportResponse = Record<string, unknown>
+    return undefined;
+};
 
-// export type ContactSupportDetails = {
-//     title?: string
-//     description?: string
-//     email?: string
-//     phone?: string
-//     address?: string
-//     workingHours?: string
-// }
+const isNullableString = (value: unknown): value is string | null => (
+    typeof value === 'string' || value === null
+);
 
-// const getFirstText = (data: ContactSupportResponse, keys: string[]) => {
-//     for (const key of keys) {
-//         const value = data[key]
-//         if (typeof value === 'string' && value.trim()) {
-//             return value.trim()
-//         }
-//     }
-// }
+const isUserProfile = (value: unknown): value is UserProfile => (
+    isRecord(value)
+    && typeof value.id === 'string'
+    && typeof value.email === 'string'
+    && typeof value.role === 'string'
+    && typeof value.isEmailVerified === 'boolean'
+    && typeof value.fullName === 'string'
+    && isNullableString(value.address)
+    && isNullableString(value.postcode)
+    && isNullableString(value.photoUrl)
+    && isNullableString(value.householdNotes)
+    && typeof value.createdAt === 'string'
+    && typeof value.updatedAt === 'string'
+);
 
+const getApiBaseUrl = (): string => {
+    const baseUrl = API_URL?.trim().replace(/\/+$/, '');
+    if (!baseUrl) {
+        throw new Error('The API URL is not configured. Set EXPO_PUBLIC_API_URL and try again.');
+    }
+    return baseUrl;
+};
 
+export const fetchUserProfile = async (
+    accessToken: string,
+    signal?: AbortSignal,
+): Promise<UserProfile> => {
+    const token = accessToken.trim();
+    if (!token) {
+        throw new Error('You must be signed in to load your profile.');
+    }
 
-// export type UpdateProfilePayload = Partial<Pick<MemberProfile, 'full_name' | 'phone' | 'photo_url'>>
+    const response = await fetch(`${getApiBaseUrl()}/api/v1/user/profile`, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        signal,
+    });
+    const responseText = await response.text();
 
-// const getAuthHeaders = () => {
-//     const token = store.getState().organization.token
-//     return {
-//         'Content-Type': 'application/json',
-//         ...(token ? { Authorization: `Bearer ${token}` } : {}),
-//     }
-// }
+    let body: unknown;
+    if (responseText) {
+        try {
+            body = JSON.parse(responseText);
+        } catch {
+            if (response.ok) {
+                throw new Error('The server returned an invalid profile response. Please try again.');
+            }
+        }
+    }
 
-// export const fetchProfile = async (): Promise<MemberProfile> => {
-//     const res = await fetch(`${API_URL}/api/v1/members/profile`, {
-//         method: 'GET',
-//         headers: getAuthHeaders(),
-//     })
-//     if (!res.ok) {
-//         const body = await res.json().catch(() => null)
-//         throw new Error(body?.message || 'Failed to load profile')
-//     }
-//     return res.json()
-// }
+    if (!response.ok) {
+        throw new Error(
+            getErrorMessage(body) ?? `Could not load your profile (${response.status}). Please try again.`,
+        );
+    }
 
-// export const updateProfile = async (payload: UpdateProfilePayload): Promise<MemberProfile> => {
-//     const res = await fetch(`${API_URL}/api/v1/members/profile`, {
-//         method: 'PATCH',
-//         headers: getAuthHeaders(),
-//         body: JSON.stringify(payload),
-//     })
-//     if (!res.ok) {
-//         const body = await res.json().catch(() => null)
-//         throw new Error(body?.message || 'Failed to update profile')
-//     }
-//     return res.json()
-// }
+    if (!isUserProfile(body)) {
+        throw new Error('The server returned incomplete profile data. Please try again.');
+    }
 
-
-// export const deleteAccount = async () => {
-//     const res = await fetch(`${API_URL}/api/v1/members/profile`, {
-//         method: 'DELETE',
-//         headers: getAuthHeaders(),
-//         // body: JSON.stringify(payload),
-//     })
-//     if (!res.ok) {
-//         const body = await res.json().catch(() => null)
-//         throw new Error(body?.message || 'Failed to update profile')
-//     }
-//     return res.json()
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const fetchContactSupport = async (): Promise<ContactSupportDetails> => {
-//     if (!API_URL) {
-//         throw new Error('API URL is not configured')
-//     }
-
-//     const response = await fetch(`${API_URL}/api/v1/help/contact-support`, {
-//         method: 'GET',
-//         headers: {
-//             Accept: 'application/json',
-//         },
-//     })
-
-//     if (!response.ok) {
-//         throw new Error(`Could not load contact support details (${response.status})`)
-//     }
-
-//     const payload = (await response.json()) as ContactSupportResponse
-//     const data = (payload.data && typeof payload.data === 'object'
-//         ? payload.data
-//         : payload) as ContactSupportResponse
-
-//     return {
-//         title: getFirstText(data, ['title', 'heading']),
-//         description: getFirstText(data, ['description', 'message', 'content']),
-//         email: getFirstText(data, ['email', 'support_email', 'supportEmail']),
-//         phone: getFirstText(data, ['phone', 'support_phone', 'supportPhone']),
-//         address: getFirstText(data, ['address', 'support_address', 'supportAddress', 'location']),
-//         workingHours: getFirstText(data, [
-//             'hours',
-//             'support_hours',
-//             'supportHours',
-//             'working_hours',
-//             'workingHours',
-//             'business_hours',
-//             'businessHours',
-//         ]),
-//     }
-// }
-
-
+    return body;
+};

@@ -6,6 +6,7 @@ export type SignUpRequest = {
 
 export type SignUpResponse = {
     message: string;
+    isEmailVerified?: boolean;
 };
 
 export type VerifyOtpRequest = {

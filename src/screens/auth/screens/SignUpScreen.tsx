@@ -29,6 +29,7 @@ type SignUpValues = {
     email: string;
     password: string;
     confirmPassword: string;
+    
 };
 
 type SignUpErrors = Partial<Record<keyof SignUpValues, string>>;
@@ -91,16 +92,28 @@ const SignUpScreen = ({ navigation }: Props) => {
         setIsCreatingAccount(true);
         try {
             const email = values.email.trim().toLowerCase();
-            await signUp({
+            const response = await signUp({
                 fullName: values.fullName.trim(),
                 email,
                 password: values.password,
             });
-            navigation.navigate('OtpVerify', {
-                email,
-                fullName: values.fullName.trim(),
-                purpose: 'SIGNUP',
-            });
+
+            if (response.isEmailVerified === false) {
+                showErrorToast('Please verify your account');
+                navigation.navigate('OtpVerify', {
+                    email,
+                    fullName: values.fullName.trim(),
+                    purpose: 'SIGNUP',
+                });
+                return;
+            }
+
+            if (response.isEmailVerified === true) {
+                showErrorToast('Account is already created, please log in');
+                return;
+            }
+
+            throw new Error('The server did not indicate whether this email is verified. Please try again.');
         } catch (error) {
             console.error('Unable to sign up:', error);
             showErrorToast(

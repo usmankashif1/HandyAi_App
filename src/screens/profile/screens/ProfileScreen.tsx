@@ -1,4 +1,15 @@
-import { Alert, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
+import { useEffect } from 'react';
+import {
+    ActivityIndicator,
+    Alert,
+    Image,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    useWindowDimensions,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppText from '../../../components/AppText';
 import Container from '../../../components/Container';
@@ -6,17 +17,42 @@ import { Colors } from '../../../core/theme/colors';
 import { FontSize } from '../../../core/theme/designTokens';
 import { RS } from '../../../core/utils/responsive';
 import { showErrorToast } from '../../../core/utils/toast';
-import { useAuthSession } from '../../auth/AuthSessionContext';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { signOut } from '../../../store/slices/authSlice';
+import { clearProfile, loadUserProfile } from '../../../store/slices/profileSlice';
 import ProfileIcon from '../components/ProfileIcon';
 import ProfileSettingRow from '../components/ProfileSettingRow';
 
-
-
 const ProfileScreen = () => {
-    const { account, signOut } = useAuthSession();
+    const dispatch = useAppDispatch();
+    const { token, account } = useAppSelector((state) => state.auth);
+    const { profile, isLoading, error } = useAppSelector((state) => state.profile);
     const { width } = useWindowDimensions();
     const compact = width < 380;
     const avatarSize = width < 350 ? 80 : compact ? 96 : 112;
+
+    useEffect(() => {
+        if (!token) {
+            dispatch(clearProfile());
+            return undefined;
+        }
+
+        const request = dispatch(loadUserProfile({ accessToken: token }));
+        return () => request.abort();
+    }, [dispatch, token]);
+
+    const displayName = profile?.fullName ?? account?.fullName ?? 'Handy AI user';
+    const initials = displayName
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join('');
+    const retryProfileLoad = () => {
+        if (token) {
+            void dispatch(loadUserProfile({ accessToken: token }));
+        }
+    };
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -29,21 +65,54 @@ const ProfileScreen = () => {
                     Account Settings
                 </AppText>
 
+                {error ? (
+                    <View style={styles.errorCard} accessibilityRole="alert">
+                        <AppText style={styles.errorText}>{error}</AppText>
+                        <TouchableOpacity
+                            onPress={retryProfileLoad}
+                            accessibilityRole="button"
+                            accessibilityLabel="Retry loading profile"
+                            style={styles.retryButton}
+                        >
+                            <AppText style={styles.retryText}>Try again</AppText>
+                        </TouchableOpacity>
+                    </View>
+                ) : null}
+
                 <Container style={[styles.profileCard, compact && styles.compactProfileCard]}>
-                    <Image
-                        source={{
-                            uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&h=320&q=85',
-                        }}
-                        style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
-                        accessibilityLabel="Profile photo"
-                    />
+                    {profile?.photoUrl ? (
+                        <Image
+                            source={{ uri: profile.photoUrl }}
+                            style={{ width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }}
+                            accessibilityLabel="Profile photo"
+                        />
+                    ) : (
+                        <View
+                            style={[
+                                styles.avatarPlaceholder,
+                                { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 },
+                            ]}
+                            accessibilityLabel="Profile photo placeholder"
+                        >
+                            <AppText style={styles.avatarInitials}>{initials}</AppText>
+                        </View>
+                    )}
                     <Container style={styles.profileInfo}>
-                        <AppText style={[styles.name, compact && styles.compactName]} numberOfLines={1}>
-                            {account?.fullName ?? 'Handy AI user'}
-                        </AppText>
-                        <AppText style={[styles.email, compact && styles.compactEmail]} numberOfLines={1}>
-                            {account?.email ?? ''}
-                        </AppText>
+                        {isLoading && !profile ? (
+                            <View style={styles.loadingState}>
+                                <ActivityIndicator color={Colors.primaryDark} />
+                                <AppText style={styles.loadingText}>Loading profile…</AppText>
+                            </View>
+                        ) : (
+                            <>
+                                <AppText style={[styles.name, compact && styles.compactName]} numberOfLines={1}>
+                                    {displayName}
+                                </AppText>
+                                <AppText style={[styles.email, compact && styles.compactEmail]} numberOfLines={1}>
+                                    {profile?.email ?? account?.email ?? ''}
+                                </AppText>
+                            </>
+                        )}
                         <Container style={styles.editProfile}>
                             <ProfileIcon name="edit" size={RS(22)} />
                             <AppText style={[styles.editProfileText, compact && styles.compactEditProfileText]}>
@@ -53,8 +122,23 @@ const ProfileScreen = () => {
                     </Container>
                 </Container>
 
+                {/* <View style={styles.addressCard}>
+                    <AppText style={styles.addressTitle}>Address</AppText>
+                    <AppText style={styles.addressValue}>
+                        {profile?.address?.trim() || 'No address added'}
+                    </AppText>
+                    <AppText style={styles.postcodeValue}>
+                        {profile?.postcode?.trim() || 'No postcode added'}
+                    </AppText>
+                </View> */}
+
                 <Container style={styles.settingsCard}>
-                    <ProfileSettingRow icon="notes" title="Household Notes" compact={compact} />
+                    <ProfileSettingRow
+                        icon="notes"
+                        title="Household Notes"
+                        detail={profile?.householdNotes?.trim() || 'No household notes added'}
+                        compact={compact}
+                    />
                     <Container style={styles.divider} />
                     <ProfileSettingRow
                         icon="payment"
@@ -79,7 +163,7 @@ const ProfileScreen = () => {
                             text: 'Log Out',
                             style: 'destructive',
                             onPress: () => {
-                                void signOut().catch((error: unknown) => {
+                                void dispatch(signOut()).unwrap().catch((error: unknown) => {
                                     console.error('Unable to log out:', error);
                                     showErrorToast('Could not log out', 'Please try again.');
                                 });
@@ -146,10 +230,29 @@ const styles = StyleSheet.create({
         gap: RS(12),
         padding: RS(14),
     },
+    avatarPlaceholder: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.primaryLight,
+    },
+    avatarInitials: {
+        color: Colors.primaryDark,
+        fontSize: FontSize.heading,
+        fontWeight: '700',
+    },
     profileInfo: {
         flex: 1,
         minWidth: RS(0),
         gap: RS(7),
+    },
+    loadingState: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: RS(8),
+    },
+    loadingText: {
+        color: Colors.textSecondary,
+        fontSize: FontSize.body,
     },
     name: {
         color: '#17191C',
@@ -186,6 +289,50 @@ const styles = StyleSheet.create({
         borderColor: '#CFD2D6',
         borderRadius: RS(20),
         backgroundColor: Colors.surface,
+    },
+    addressCard: {
+        gap: RS(6),
+        padding: RS(18),
+        borderWidth: 1,
+        borderColor: '#CFD2D6',
+        borderRadius: RS(20),
+        backgroundColor: Colors.surface,
+    },
+    addressTitle: {
+        color: '#17191C',
+        fontSize: FontSize.bodyLarge,
+        fontWeight: '600',
+    },
+    addressValue: {
+        color: '#17191C',
+        fontSize: FontSize.body,
+    },
+    postcodeValue: {
+        color: Colors.textSecondary,
+        fontSize: FontSize.bodySmall,
+    },
+    errorCard: {
+        gap: RS(10),
+        padding: RS(16),
+        borderRadius: RS(16),
+        backgroundColor: Colors.failedLight,
+    },
+    errorText: {
+        color: Colors.failed,
+        fontSize: FontSize.body,
+    },
+    retryButton: {
+        alignSelf: 'flex-start',
+        minHeight: RS(40),
+        justifyContent: 'center',
+        paddingHorizontal: RS(14),
+        borderRadius: RS(12),
+        backgroundColor: Colors.surface,
+    },
+    retryText: {
+        color: Colors.primaryDark,
+        fontSize: FontSize.body,
+        fontWeight: '600',
     },
     divider: {
         height: StyleSheet.hairlineWidth,
