@@ -1,5 +1,5 @@
 import { API_URL } from '../../core/utils/config';
-import type { UserProfile } from './profile.types';
+import type { UpdateProfileRequest, UserProfile } from './profile.types';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
     typeof value === 'object' && value !== null
@@ -51,6 +51,24 @@ const getApiBaseUrl = (): string => {
     return baseUrl;
 };
 
+const getAuthorizationHeader = (token: string): string => ['Bearer', token].join(' ');
+
+const parseResponseBody = async (response: Response): Promise<unknown> => {
+    const responseText = await response.text();
+    if (!responseText) {
+        return undefined;
+    }
+
+    try {
+        return JSON.parse(responseText);
+    } catch {
+        if (response.ok) {
+            throw new Error('The server returned an invalid profile response. Please try again.');
+        }
+        return undefined;
+    }
+};
+
 export const fetchUserProfile = async (
     accessToken: string,
     signal?: AbortSignal,
@@ -64,22 +82,11 @@ export const fetchUserProfile = async (
         method: 'GET',
         headers: {
             Accept: 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: getAuthorizationHeader(token),
         },
         signal,
     });
-    const responseText = await response.text();
-
-    let body: unknown;
-    if (responseText) {
-        try {
-            body = JSON.parse(responseText);
-        } catch {
-            if (response.ok) {
-                throw new Error('The server returned an invalid profile response. Please try again.');
-            }
-        }
-    }
+    const body = await parseResponseBody(response);
 
     if (!response.ok) {
         throw new Error(
@@ -89,6 +96,41 @@ export const fetchUserProfile = async (
 
     if (!isUserProfile(body)) {
         throw new Error('The server returned incomplete profile data. Please try again.');
+    }
+
+    return body;
+};
+
+export const updateUserProfile = async (
+    accessToken: string,
+    updates: UpdateProfileRequest,
+    signal?: AbortSignal,
+): Promise<UserProfile> => {
+    const token = accessToken.trim();
+    if (!token) {
+        throw new Error('You must be signed in to update your profile.');
+    }
+
+    const response = await fetch(`${getApiBaseUrl()}/api/v1/user/profile`, {
+        method: 'PATCH',
+        headers: {
+            Accept: 'application/json',
+            Authorization: getAuthorizationHeader(token),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates),
+        signal,
+    });
+    const body = await parseResponseBody(response);
+
+    if (!response.ok) {
+        throw new Error(
+            getErrorMessage(body) ?? `Could not update your profile (${response.status}). Please try again.`,
+        );
+    }
+
+    if (!isUserProfile(body)) {
+        throw new Error('The server returned incomplete profile data after the update. Please try again.');
     }
 
     return body;

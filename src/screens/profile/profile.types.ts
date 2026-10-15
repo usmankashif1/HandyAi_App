@@ -11,3 +11,13 @@ export type UserProfile = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type UpdateProfileRequest = Pick<
+    UserProfile,
+    'fullName' | 'address' | 'postcode' | 'householdNotes'
+>;
+
+export type ProfileStackParamList = {
+    ProfileHome: undefined;
+    UpdateProfile: undefined;
+};

@@ -1,3 +1,4 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import {
     ActivityIndicator,
@@ -22,8 +23,11 @@ import { signOut } from '../../../store/slices/authSlice';
 import { clearProfile, loadUserProfile } from '../../../store/slices/profileSlice';
 import ProfileIcon from '../components/ProfileIcon';
 import ProfileSettingRow from '../components/ProfileSettingRow';
+import type { ProfileStackParamList } from '../profile.types';
 
-const ProfileScreen = () => {
+type Props = NativeStackScreenProps<ProfileStackParamList, 'ProfileHome'>;
+
+const ProfileScreen = ({ navigation }: Props) => {
     const dispatch = useAppDispatch();
     const { token, account } = useAppSelector((state) => state.auth);
     const { profile, isLoading, error } = useAppSelector((state) => state.profile);
@@ -113,16 +117,21 @@ const ProfileScreen = () => {
                                 </AppText>
                             </>
                         )}
-                        <Container style={styles.editProfile}>
+                        <TouchableOpacity
+                            style={styles.editProfile}
+                            onPress={() => navigation.navigate('UpdateProfile')}
+                            accessibilityRole="button"
+                            accessibilityLabel="Edit profile"
+                        >
                             <ProfileIcon name="edit" size={RS(22)} />
                             <AppText style={[styles.editProfileText, compact && styles.compactEditProfileText]}>
                                 Edit Profile
                             </AppText>
-                        </Container>
+                        </TouchableOpacity>
                     </Container>
                 </Container>
 
-                {/* <View style={styles.addressCard}>
+                {/* <View style={styles.addressCard}>   
                     <AppText style={styles.addressTitle}>Address</AppText>
                     <AppText style={styles.addressValue}>
                         {profile?.address?.trim() || 'No address added'}

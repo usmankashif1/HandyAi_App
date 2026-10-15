@@ -1,5 +1,7 @@
 export type AuthStackParamList = {
+    AppTypeSelection: undefined;
     Onboarding: undefined;
+    ProviderRegistration: undefined;
     SignUp: undefined;
     ForgotPassword: undefined;
     OtpVerify:

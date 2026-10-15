@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile } from '../../screens/profile/profile.api';
-import type { UserProfile } from '../../screens/profile/profile.types';
+import { fetchUserProfile, updateUserProfile } from '../../screens/profile/profile.api';
+import type { UpdateProfileRequest, UserProfile } from '../../screens/profile/profile.types';
 import { signOut } from './authSlice';
 
 type ProfileState = {
@@ -29,6 +29,20 @@ export const loadUserProfile = createAsyncThunk<
     }
 });
 
+export const saveUserProfile = createAsyncThunk<
+    UserProfile,
+    { accessToken: string; updates: UpdateProfileRequest },
+    { rejectValue: string }
+>('profile/saveUserProfile', async ({ accessToken, updates }, { signal, rejectWithValue }) => {
+    try {
+        return await updateUserProfile(accessToken, updates, signal);
+    } catch (error) {
+        return rejectWithValue(
+            error instanceof Error ? error.message : 'Could not update your profile. Please try again.',
+        );
+    }
+});
+
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
@@ -50,6 +64,21 @@ const profileSlice = createSlice({
                 state.isLoading = false;
                 if (!action.meta.aborted) {
                     state.error = action.payload ?? 'Could not load your profile. Please try again.';
+                }
+            })
+            .addCase(saveUserProfile.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(saveUserProfile.fulfilled, (state, action) => {
+                state.profile = action.payload;
+                state.isLoading = false;
+                state.error = null;
+            })
+            .addCase(saveUserProfile.rejected, (state, action) => {
+                state.isLoading = false;
+                if (!action.meta.aborted) {
+                    state.error = action.payload ?? 'Could not update your profile. Please try again.';
                 }
             })
             .addCase(signOut.fulfilled, () => initialState);

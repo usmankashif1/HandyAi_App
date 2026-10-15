@@ -4,14 +4,18 @@ import OtpVerifyScreen from '../../screens/auth/screens/OtpVerifyScreen';
 import ForgotPasswordScreen from '../../screens/auth/screens/ForgotPasswordScreen';
 import ChangePasswordScreen from '../../screens/auth/screens/ChangePasswordScreen';
 import SignUpScreen from '../../screens/auth/screens/SignUpScreen';
+import AppTypeSelectionScreen from '../../screens/onboarding/AppTypeSelectionScreen';
 import OnboardingScreen from '../../screens/onboarding/OnboardingScreen';
+import ProviderNavigator from '../provider/ProviderNavigator';
 import type { AuthStackParamList } from './auth.types';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 const AuthNavigator = () => (
-    <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="AppTypeSelection" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="AppTypeSelection" component={AppTypeSelectionScreen} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="ProviderRegistration" component={ProviderNavigator} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
