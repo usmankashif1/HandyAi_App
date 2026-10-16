@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StatusBar, StyleSheet, TextInput, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
-import AppButton from '../../components/AppButton';
-import AppText from '../../components/AppText';
-import Container from '../../components/Container';
-import { Colors } from '../../core/theme/colors';
-import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
-import { RS } from '../../core/utils/responsive';
+import AppButton from '../../../../components/AppButton';
+import AppText from '../../../../components/AppText';
+import Container from '../../../../components/Container';
+import { Colors } from '../../../../core/theme/colors';
+import { FontSize, Radii, Spacing, TypeScale } from '../../../../core/theme/designTokens';
+import { RS } from '../../../../core/utils/responsive';
 import type { MainStackParamList } from '../../navigation/main/Stack/main.types';
 
 

@@ -1,10 +1,10 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import { useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { RS } from '../../../core/utils/responsive';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { RS } from '../../../../../core/utils/responsive';
 import HistoryBookingCard from '../components/HistoryBookingCard';
 import type { HistoryBooking } from '../history.types';
 import { Colors } from '@/core/theme/colors';

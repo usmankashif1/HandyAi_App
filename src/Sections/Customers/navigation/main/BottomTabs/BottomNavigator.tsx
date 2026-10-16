@@ -1,9 +1,9 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { Colors } from '../../../core/theme/colors';
-import { LocationPermissionProvider } from '../../../core/location/LocationPermissionProvider';
+import { Colors } from '../../../../../core/theme/colors';
+import { LocationPermissionProvider } from '../../../../../core/location/LocationPermissionProvider';
 import ChatNavigator from '../../../screens/chat/navigation/ChatNavigator';
 import HistoryNavigator from '../../../screens/history/navigation/HistoryNavigator';
 import ProfileNavigator from '../../../screens/profile/navigation/ProfileNavigator';

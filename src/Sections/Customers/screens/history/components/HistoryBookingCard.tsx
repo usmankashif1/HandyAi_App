@@ -1,11 +1,11 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import { Image, StyleSheet } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
-import AppButton from '../../../components/AppButton';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { Colors } from '../../../core/theme/colors';
-import { RS } from '../../../core/utils/responsive';
+import AppButton from '../../../../../components/AppButton';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { Colors } from '../../../../../core/theme/colors';
+import { RS } from '../../../../../core/utils/responsive';
 import type { HistoryBooking } from '../history.types';
 
 

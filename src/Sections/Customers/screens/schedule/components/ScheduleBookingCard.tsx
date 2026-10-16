@@ -1,12 +1,12 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import { Image, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { Colors } from '../../../core/theme/colors';
+import { Colors } from '../../../../../core/theme/colors';
 import type { ScheduleBooking, ScheduleBookingStatus } from '../schedule.types';
-import Container from '../../../components/Container';
-import AppText from '../../../components/AppText';
-import AppButton from '../../../components/AppButton';
-import { RH, RS, RW } from '../../../core/utils/responsive';
+import Container from '../../../../../components/Container';
+import AppText from '../../../../../components/AppText';
+import AppButton from '../../../../../components/AppButton';
+import { RH, RS, RW } from '../../../../../core/utils/responsive';
 
 
 

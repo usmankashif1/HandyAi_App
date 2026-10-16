@@ -1,5 +1,5 @@
 import Svg, { Circle, Path } from 'react-native-svg';
-import { Colors } from '../../../core/theme/colors';
+import { Colors } from '../../../../../core/theme/colors';
 
 export type ChatIconName =
     | 'back'

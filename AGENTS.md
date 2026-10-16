@@ -25,7 +25,7 @@ Run lint and typecheck before declaring any task done.
 
 ## Navigation
 
-- Use **React Navigation** for all navigation. Navigators live in `src/navigation/`, and screens live in `src/screens/`.
+- Use **React Navigation** for all navigation. Root navigation lives in `src/navigation/root/`; customer screens and navigation live in `src/Sections/Customers/`, and provider auth and navigation live in `src/Sections/Providers/`.
 - The app entry point is `App.tsx`, registered from `index.js`.
 
 ## Building with EAS

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { useCurrentLocation } from '../../../core/location/LocationPermissionProvider';
-import { Colors } from '../../../core/theme/colors';
-import { FontSize, Radii } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
+import { useCurrentLocation } from '../../../../../core/location/LocationPermissionProvider';
+import { Colors } from '../../../../../core/theme/colors';
+import { FontSize, Radii } from '../../../../../core/theme/designTokens';
+import { RS } from '../../../../../core/utils/responsive';
 
 const LocationPin = () => (
     <Svg width={RS(18)} height={RS(18)} viewBox="0 0 24 24" accessibilityElementsHidden>

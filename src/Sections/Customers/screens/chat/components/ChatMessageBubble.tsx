@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { Colors } from '../../../core/theme/colors';
-import { FontSize } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { Colors } from '../../../../../core/theme/colors';
+import { FontSize } from '../../../../../core/theme/designTokens';
+import { RS } from '../../../../../core/utils/responsive';
 import ChatAvatar from './ChatAvatar';
 import ChatIcon from './ChatIcon';
 

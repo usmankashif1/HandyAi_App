@@ -6,7 +6,7 @@ import ChangePasswordScreen from '../../screens/auth/screens/ChangePasswordScree
 import SignUpScreen from '../../screens/auth/screens/SignUpScreen';
 import AppTypeSelectionScreen from '../../screens/onboarding/AppTypeSelectionScreen';
 import OnboardingScreen from '../../screens/onboarding/OnboardingScreen';
-import ProviderNavigator from '../provider/ProviderNavigator';
+import ProviderNavigator from '../../../Providers/navigation/ProviderNavigator';
 import type { AuthStackParamList } from './auth.types';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();

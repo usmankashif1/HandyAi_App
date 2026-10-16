@@ -1,4 +1,4 @@
-import { API_URL } from '../../core/utils/config';
+import { API_URL } from '../../../../core/utils/config';
 import type {
     AuthActionResponse,
     ForgotPasswordRequest,

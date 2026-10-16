@@ -3,7 +3,7 @@ import {
     clearAccessToken,
     persistAccessToken,
     readAccessToken,
-} from '../../screens/auth/accessTokenStorage';
+} from '../../Sections/Customers/screens/auth/accessTokenStorage';
 
 export type AccountIdentity = {
     fullName: string;

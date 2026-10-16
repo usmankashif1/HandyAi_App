@@ -12,13 +12,13 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppText from '../../../components/AppText';
-import { Colors } from '../../../core/theme/colors';
-import { FontSize, Spacing } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
-import { showSuccessToast } from '../../../core/utils/toast';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { loadUserProfile, saveUserProfile } from '../../../store/slices/profileSlice';
+import AppText from '../../../../../components/AppText';
+import { Colors } from '../../../../../core/theme/colors';
+import { FontSize, Spacing } from '../../../../../core/theme/designTokens';
+import { RS } from '../../../../../core/utils/responsive';
+import { showSuccessToast } from '../../../../../core/utils/toast';
+import { useAppDispatch, useAppSelector } from '../../../../../store/hooks';
+import { loadUserProfile, saveUserProfile } from '../../../../../store/slices/profileSlice';
 import type { ProfileStackParamList, UserProfile } from '../profile.types';
 
 type Props = NativeStackScreenProps<ProfileStackParamList, 'UpdateProfile'>;

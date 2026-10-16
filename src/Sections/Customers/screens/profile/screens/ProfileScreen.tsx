@@ -12,15 +12,15 @@ import {
     useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { Colors } from '../../../core/theme/colors';
-import { FontSize } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
-import { showErrorToast } from '../../../core/utils/toast';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { signOut } from '../../../store/slices/authSlice';
-import { clearProfile, loadUserProfile } from '../../../store/slices/profileSlice';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { Colors } from '../../../../../core/theme/colors';
+import { FontSize } from '../../../../../core/theme/designTokens';
+import { RS } from '../../../../../core/utils/responsive';
+import { showErrorToast } from '../../../../../core/utils/toast';
+import { useAppDispatch, useAppSelector } from '../../../../../store/hooks';
+import { signOut } from '../../../../../store/slices/authSlice';
+import { clearProfile, loadUserProfile } from '../../../../../store/slices/profileSlice';
 import ProfileIcon from '../components/ProfileIcon';
 import ProfileSettingRow from '../components/ProfileSettingRow';
 import type { ProfileStackParamList } from '../profile.types';

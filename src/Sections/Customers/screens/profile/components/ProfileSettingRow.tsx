@@ -1,8 +1,8 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import { StyleSheet } from 'react-native';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { RS } from '../../../core/utils/responsive';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { RS } from '../../../../../core/utils/responsive';
 import ProfileIcon, { type ProfileIconName } from './ProfileIcon';
 
 

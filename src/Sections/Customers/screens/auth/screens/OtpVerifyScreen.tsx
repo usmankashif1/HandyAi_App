@@ -13,16 +13,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
-import AppButton from '../../../components/AppButton';
-import AppText from '../../../components/AppText';
-import { Colors } from '../../../core/theme/colors';
-import { FontSize, Radii, Spacing, TypeScale } from '../../../core/theme/designTokens';
-import { RF, RS } from '../../../core/utils/responsive';
+import AppButton from '../../../../../components/AppButton';
+import AppText from '../../../../../components/AppText';
+import { Colors } from '../../../../../core/theme/colors';
+import { FontSize, Radii, Spacing, TypeScale } from '../../../../../core/theme/designTokens';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
 import { resendOtp, verifyOtp } from '../auth.api';
-import { showErrorToast, showSuccessToast } from '../../../core/utils/toast';
-import { useAppDispatch } from '../../../store/hooks';
-import { signInWithAccessToken } from '../../../store/slices/authSlice';
+import { showErrorToast, showSuccessToast } from '../../../../../core/utils/toast';
+import { useAppDispatch } from '../../../../../store/hooks';
+import { signInWithAccessToken } from '../../../../../store/slices/authSlice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'OtpVerify'>;
 

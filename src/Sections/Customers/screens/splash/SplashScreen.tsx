@@ -1,11 +1,11 @@
 import { ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
-import AppText from '../../components/AppText';
-import Container from '../../components/Container';
-import { Colors } from '../../core/theme/colors';
-import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
-import { RS } from '../../core/utils/responsive';
+import AppText from '../../../../components/AppText';
+import Container from '../../../../components/Container';
+import { Colors } from '../../../../core/theme/colors';
+import { FontSize, Radii, Spacing, TypeScale } from '../../../../core/theme/designTokens';
+import { RS } from '../../../../core/utils/responsive';
 
 const SplashScreen = () => (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>

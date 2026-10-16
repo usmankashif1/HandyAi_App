@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile, updateUserProfile } from '../../screens/profile/profile.api';
-import type { UpdateProfileRequest, UserProfile } from '../../screens/profile/profile.types';
+import { fetchUserProfile, updateUserProfile } from '../../Sections/Customers/screens/profile/profile.api';
+import type { UpdateProfileRequest, UserProfile } from '../../Sections/Customers/screens/profile/profile.types';
 import { signOut } from './authSlice';
 
 type ProfileState = {

@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import SplashScreen from '../../screens/splash/SplashScreen';
-import AuthNavigator from '../auth/AuthNavigator';
-import StackNavigator from '../main/Stack/StackNavigator';
+import SplashScreen from '../../Sections/Customers/screens/splash/SplashScreen';
+import AuthNavigator from '../../Sections/Customers/navigation/auth/AuthNavigator';
+import StackNavigator from '../../Sections/Customers/navigation/main/Stack/StackNavigator';
 import { Colors } from '../../core/theme/colors';
 import AppText from '../../components/AppText';
 import AppButton from '../../components/AppButton';

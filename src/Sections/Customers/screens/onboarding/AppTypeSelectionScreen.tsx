@@ -10,11 +10,11 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Svg, { Circle, Ellipse, Path, Rect } from 'react-native-svg';
-import AppText from '../../components/AppText';
-import { Colors } from '../../core/theme/colors';
-import { Radii } from '../../core/theme/designTokens';
-import { RS } from '../../core/utils/responsive';
+import Svg, { Path } from 'react-native-svg';
+import AppText from '../../../../components/AppText';
+import { Colors } from '../../../../core/theme/colors';
+import { Radii } from '../../../../core/theme/designTokens';
+import { RS } from '../../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../navigation/auth/auth.types';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'AppTypeSelection'>;
@@ -97,14 +97,14 @@ const AppTypeSelectionScreen = ({ navigation }: Props) => (
                     title="Need a Service?"
                     description="Book trusted professionals for cleaning, repair, and more."
                     action="Find a Service"
-                    illustration={<Image source={require('../../assets/images/serviceTacker_image.png')} style={{ width: '100%', height: '100%' }} />}
+                    illustration={<Image source={require('../../../../assets/images/serviceTacker_image.png')} style={{ width: '100%', height: '100%' }} />}
                     onPress={() => navigation.navigate('Onboarding')}
                 />
                 <RoleCard
                     title="Register as a Pro"
                     description="Offer your skills, get bookings, and grow your business."
                     action="Join as Provider"
-                    illustration={<Image source={require('../../assets/images/provider_image.png')} style={{ width: '100%', height: '100%' }} />}
+                    illustration={<Image source={require('../../../../assets/images/provider_image.png')} style={{ width: '100%', height: '100%' }} />}
                     outlined
                     onPress={() => navigation.navigate('ProviderRegistration')}
                 />

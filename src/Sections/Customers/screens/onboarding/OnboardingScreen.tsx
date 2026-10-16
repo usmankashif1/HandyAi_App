@@ -2,12 +2,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Image, ScrollView, StatusBar, StyleSheet, useWindowDimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
-import AppButton from '../../components/AppButton';
-import AppText from '../../components/AppText';
-import Container from '../../components/Container';
-import { Colors } from '../../core/theme/colors';
-import { FontSize, Radii, Spacing, TypeScale } from '../../core/theme/designTokens';
-import { RS } from '../../core/utils/responsive';
+import AppButton from '../../../../components/AppButton';
+import AppText from '../../../../components/AppText';
+import Container from '../../../../components/Container';
+import { Colors } from '../../../../core/theme/colors';
+import { FontSize, Radii, Spacing, TypeScale } from '../../../../core/theme/designTokens';
+import { RS } from '../../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../navigation/auth/auth.types';
 
 
@@ -47,7 +47,7 @@ const OnboardingScreen = ({ navigation }: Props) => {
             >
                 <Container style={[styles.hero, { height: heroHeight }]}>
                     <Image
-                        source={require('../../assets/images/Onboarding_Home.jpg')}
+                        source={require('../../../../assets/images/Onboarding_Home.jpg')}
                         style={styles.heroImage}
                         resizeMode="cover"
                         accessibilityLabel="Bright, welcoming living room"

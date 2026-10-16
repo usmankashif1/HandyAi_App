@@ -1,10 +1,10 @@
-import { FontSize } from '../../../core/theme/designTokens';
+import { FontSize } from '../../../../../core/theme/designTokens';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ScrollView, StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppText from '../../../components/AppText';
-import Container from '../../../components/Container';
-import { RS } from '../../../core/utils/responsive';
+import AppText from '../../../../../components/AppText';
+import Container from '../../../../../components/Container';
+import { RS } from '../../../../../core/utils/responsive';
 import ScheduleBookingCard from '../components/ScheduleBookingCard';
 import type { ScheduleBookingGroup, ScheduleStackParamList } from '../schedule.types';
 import { Colors } from '@/core/theme/colors';
