@@ -1,10 +1,10 @@
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AppText from '../../../components/AppText';
-import { Colors } from '../../../core/theme/colors';
-import { RS } from '../../../core/utils/responsive';
-import type { ProviderTabParamList } from '../navigation/provider.types';
+import AppText from '../../../../../components/AppText';
+import { Colors } from '../../../../../core/theme/colors';
+import { RS } from '../../../../../core/utils/responsive';
+import type { ProviderTabParamList } from '../../../navigation/provider.types';
 
 type Props = BottomTabScreenProps<ProviderTabParamList>;
 

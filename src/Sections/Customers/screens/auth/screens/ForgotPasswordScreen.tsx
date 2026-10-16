@@ -56,7 +56,8 @@ const HandyMark = () => (
     </Svg>
 );
 
-const ForgotPasswordScreen = ({ navigation }: Props) => {
+const ForgotPasswordScreen = ({ navigation, route }: Props) => {
+    const role = route.params?.role;
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState<string>();
     const [isSending, setIsSending] = useState(false);
@@ -79,6 +80,8 @@ const ForgotPasswordScreen = ({ navigation }: Props) => {
             navigation.navigate('OtpVerify', {
                 email: normalizedEmail,
                 purpose: 'RESET_PASSWORD',
+                role,
+                continueProviderOnboarding: route.params?.continueProviderOnboarding,
             });
         } catch (error) {
             console.error('Unable to request a password reset code:', error);

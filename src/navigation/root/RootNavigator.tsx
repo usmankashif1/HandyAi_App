@@ -4,6 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import SplashScreen from '../../Sections/Customers/screens/splash/SplashScreen';
 import AuthNavigator from '../../Sections/Customers/navigation/auth/AuthNavigator';
 import StackNavigator from '../../Sections/Customers/navigation/main/Stack/StackNavigator';
+import ProviderNavigator from '../../Sections/Providers/navigation/ProviderNavigator';
+import ProviderTabsNavigator from '../../Sections/Providers/navigation/ProviderTabsNavigator';
 import { Colors } from '../../core/theme/colors';
 import AppText from '../../components/AppText';
 import AppButton from '../../components/AppButton';
@@ -17,7 +19,14 @@ const SPLASH_DURATION_MS = 2500;
 const RootNavigation = () => {
     const [splashComplete, setSplashComplete] = useState(false);
     const dispatch = useAppDispatch();
-    const { token, shouldStartSetup, isLoading, initializationError } = useAppSelector(
+    const {
+        token,
+        role,
+        shouldStartSetup,
+        shouldStartProviderSetup,
+        isLoading,
+        initializationError,
+    } = useAppSelector(
         (state) => state.auth,
     );
 
@@ -46,8 +55,16 @@ const RootNavigation = () => {
     }
 
     return (
-        <NavigationContainer key={token ? 'authenticated' : 'unauthenticated'}>
-            {token ? <StackNavigator startAtSetup={shouldStartSetup} /> : <AuthNavigator />}
+        <NavigationContainer key={`${role}-${token ? 'authenticated' : 'unauthenticated'}`}>
+            {token ? (
+                role === 'PROVIDER' ? (
+                    shouldStartProviderSetup
+                        ? <ProviderNavigator startAtProviderOnboarding />
+                        : <ProviderTabsNavigator />
+                ) : (
+                    <StackNavigator startAtSetup={shouldStartSetup} />
+                )
+            ) : <AuthNavigator />}
         </NavigationContainer>
     );
 };

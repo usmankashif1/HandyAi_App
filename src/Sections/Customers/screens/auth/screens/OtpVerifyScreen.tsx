@@ -59,6 +59,7 @@ const HandyMark = () => (
 const OtpVerifyScreen = ({ navigation, route }: Props) => {
     const { email } = route.params;
     const purpose = route.params.purpose;
+    const role = route.params.role ?? 'CUSTOMER';
     const dispatch = useAppDispatch();
     const [code, setCode] = useState('');
     const [error, setError] = useState<string>();
@@ -93,17 +94,35 @@ const OtpVerifyScreen = ({ navigation, route }: Props) => {
             if (purpose === 'SIGNUP') {
                 const result = await verifyOtp({ email, code, purpose });
                 showSuccessToast('Email verified', result.message);
+                if (!result.token) {
+                    if (role === 'PROVIDER') {
+                        navigation.replace('Login', {
+                            role,
+                            continueProviderOnboarding: true,
+                        });
+                    } else {
+                        navigation.replace('Login', { role });
+                    }
+                    return;
+                }
+
                 await dispatch(signInWithAccessToken({
                     token: result.token,
+                    role,
                     account: {
                         email,
                         fullName: route.params.fullName,
                     },
-                    startSetup: true,
+                    startSetup: role === 'CUSTOMER',
+                    startProviderSetup: role === 'PROVIDER',
                 })).unwrap();
             } else {
                 const result = await verifyOtp({ email, code, purpose });
-                navigation.replace('ChangePassword', { resetToken: result.resetToken });
+                navigation.replace('ChangePassword', {
+                    resetToken: result.resetToken,
+                    role,
+                    continueProviderOnboarding: route.params.continueProviderOnboarding,
+                });
             }
         } catch (requestError) {
             console.error('Unable to verify the code:', requestError);

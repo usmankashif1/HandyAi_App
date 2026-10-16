@@ -39,7 +39,8 @@ const BackIcon = () => (
     </Svg>
 );
 
-const LoginScreen = ({ navigation }: Props) => {
+const LoginScreen = ({ navigation, route }: Props) => {
+    const role = route.params?.role;
     const dispatch = useAppDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -78,22 +79,26 @@ const LoginScreen = ({ navigation }: Props) => {
             const result = await signInRequest({
                 email: normalizedEmail.toLowerCase(),
                 password,
-            })
-            // .then((response) => {
-            //     if (response?.isEmailVerified === false) {
-            //         showErrorToast("Please Verify Account");
-            //         navigation.navigate('OtpVerify', {
-            //             email: normalizedEmail.toLowerCase(),
-
-            //         });
-            //     }
-            // });
+            });
+            const userRole = result.user.role.toUpperCase();
+            if (userRole !== 'CUSTOMER' && userRole !== 'PROVIDER') {
+                throw new Error('This account has an unsupported role. Please contact support.');
+            }
+            if (role && userRole !== role) {
+                throw new Error(
+                    role === 'PROVIDER'
+                        ? 'This account is not registered as a provider.'
+                        : 'This account is not registered as a customer.',
+                );
+            }
             await dispatch(signInWithAccessToken({
                 token: result.accessToken,
+                role: userRole,
                 account: {
                     fullName: result.user.fullName,
                     email: result.user.email,
                 },
+                startProviderSetup: role === 'PROVIDER' && route.params?.continueProviderOnboarding,
             })).unwrap();
         } catch (error) {
             console.error('Unable to sign in:', error);
@@ -161,7 +166,7 @@ const LoginScreen = ({ navigation }: Props) => {
                         />
                         <View style={styles.forgotPasswordRow}>
                             <TouchableOpacity
-                                onPress={() => navigation.navigate('ForgotPassword')}
+                                onPress={() => navigation.navigate('ForgotPassword', { role })}
                                 accessibilityRole="button"
                                 accessibilityLabel="Forgot password"
                             >
@@ -187,7 +192,7 @@ const LoginScreen = ({ navigation }: Props) => {
                         Don&apos;t have an account?{' '}
                         <AppText
                             style={styles.signupLink}
-                            onPress={() => navigation.navigate('SignUp')}
+                            onPress={() => navigation.navigate('SignUp', { role })}
                             accessibilityRole="link"
                         >
                             Create account

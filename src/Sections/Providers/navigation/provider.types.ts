@@ -1,6 +1,7 @@
 import type { AuthStackParamList } from '../../Customers/navigation/auth/auth.types';
 
 export type ProviderStackParamList = AuthStackParamList & {
+    ProviderOnboarding: undefined;
     ProviderDashboard: undefined;
 };
 

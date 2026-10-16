@@ -50,7 +50,9 @@ const BackIcon = () => (
     </Svg>
 );
 
-const SignUpScreen = ({ navigation }: Props) => {
+const SignUpScreen = ({ navigation, route }: Props) => {
+    const role = route.params?.role ?? 'CUSTOMER';
+    const accountLabel = role === 'PROVIDER' ? 'provider' : 'customer';
     const [values, setValues] = useState<SignUpValues>({
         fullName: '',
         email: '',
@@ -96,6 +98,7 @@ const SignUpScreen = ({ navigation }: Props) => {
                 fullName: values.fullName.trim(),
                 email,
                 password: values.password,
+                role,
             });
 
             if (response.isEmailVerified === false) {
@@ -104,6 +107,7 @@ const SignUpScreen = ({ navigation }: Props) => {
                     email,
                     fullName: values.fullName.trim(),
                     purpose: 'SIGNUP',
+                    role,
                 });
                 return;
             }
@@ -144,7 +148,9 @@ const SignUpScreen = ({ navigation }: Props) => {
                             <BackIcon />
                         </TouchableOpacity>
 
-                        <AppText style={styles.headerTitle}>Create Your Account</AppText>
+                        <AppText style={styles.headerTitle}>
+                            {role === 'PROVIDER' ? 'Create Provider Account' : 'Create Your Account'}
+                        </AppText>
                         <View style={styles.headerSpacer} />
                     </View>
 
@@ -158,7 +164,7 @@ const SignUpScreen = ({ navigation }: Props) => {
                             Welcome to personalized Smart Home Assistance
                         </AppText>
                         <AppText style={styles.subtitle}>
-                            Let&apos;s get your Handy AI account set up.
+                            Let&apos;s get your Handy AI {accountLabel} account set up.
                         </AppText>
 
                         <View style={styles.form}>

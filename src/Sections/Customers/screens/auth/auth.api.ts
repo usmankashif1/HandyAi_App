@@ -170,11 +170,8 @@ export async function verifyOtp(
     );
 
     if (request.purpose === 'SIGNUP') {
-        // Temporary until the backend includes an access token in the signup verification response.
-        const token = response.token
-            ?? `temporary-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-
-        return { message: response.message, token };
+        const token = response.token ?? response.accessToken;
+        return { message: response.message, ...(token ? { token } : {}) };
     }
 
     const resetToken = getOptionalString(response.data?.resetToken);

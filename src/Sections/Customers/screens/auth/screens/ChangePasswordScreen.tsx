@@ -91,7 +91,10 @@ const ChangePasswordScreen = ({ navigation, route }: Props) => {
                 newPassword: password,
             });
             showSuccessToast('Password changed', result.message);
-            navigation.popTo('Login');
+            navigation.popTo('Login', {
+                role: route.params.role,
+                continueProviderOnboarding: route.params.continueProviderOnboarding,
+            });
         } catch (error) {
             console.error('Unable to reset the password:', error);
             showErrorToast(

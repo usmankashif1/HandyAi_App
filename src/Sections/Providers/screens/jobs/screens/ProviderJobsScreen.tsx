@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
-import AppText from '../../../components/AppText';
-import { Colors } from '../../../core/theme/colors';
-import { Radii, Spacing } from '../../../core/theme/designTokens';
-import { RS } from '../../../core/utils/responsive';
+import AppText from '../../../../../components/AppText';
+import { Colors } from '../../../../../core/theme/colors';
+import { Radii, Spacing } from '../../../../../core/theme/designTokens';
+import { RS } from '../../../../../core/utils/responsive';
 
 type Category = 'All' | 'Cleaning' | 'Handyman' | 'Electrical' | 'Plumbing';
 

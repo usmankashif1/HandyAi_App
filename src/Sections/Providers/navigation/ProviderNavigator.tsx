@@ -3,21 +3,30 @@ import ChangePasswordScreen from '../../Customers/screens/auth/screens/ChangePas
 import ForgotPasswordScreen from '../../Customers/screens/auth/screens/ForgotPasswordScreen';
 import LoginScreen from '../../Customers/screens/auth/screens/LoginScreen';
 import OtpVerifyScreen from '../../Customers/screens/auth/screens/OtpVerifyScreen';
-import OnboardingScreen from '../../Customers/screens/onboarding/OnboardingScreen';
-import ProviderOnboardingScreen from '../auth/onboarding/ProviderOnboardingScreen';
+import SignUpScreen from '../../Customers/screens/auth/screens/SignUpScreen';
+import ProviderOnboardingScreen from '../screens/onboarding/ProviderOnboardingScreen';
+import ProviderWelcomeScreen from '../screens/onboarding/ProviderWelcomeScreen';
 import ProviderTabsNavigator from './ProviderTabsNavigator';
 import type { ProviderStackParamList } from './provider.types';
 
 const Stack = createNativeStackNavigator<ProviderStackParamList>();
 
-const ProviderNavigator = () => (
-    <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        <Stack.Screen name="SignUp" component={ProviderOnboardingScreen} />
+type ProviderNavigatorProps = {
+    startAtProviderOnboarding?: boolean;
+};
+
+const ProviderNavigator = ({ startAtProviderOnboarding = false }: ProviderNavigatorProps) => (
+    <Stack.Navigator
+        initialRouteName={startAtProviderOnboarding ? 'ProviderOnboarding' : 'Onboarding'}
+        screenOptions={{ headerShown: false }}
+    >
+        <Stack.Screen name="Onboarding" component={ProviderWelcomeScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="OtpVerify" component={OtpVerifyScreen} />
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+        <Stack.Screen name="ProviderOnboarding" component={ProviderOnboardingScreen} />
         <Stack.Screen name="ProviderDashboard" component={ProviderTabsNavigator} />
     </Stack.Navigator>
 );

@@ -1,8 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import type { ProviderTabParamList } from './provider.types';
-import ProviderJobsScreen from '../main/ProviderJobsScreen';
-import ProviderPlaceholderScreen from '../main/ProviderPlaceholderScreen';
+import ProviderJobsScreen from '../screens/jobs/screens/ProviderJobsScreen';
+import ProviderPlaceholderScreen from '../screens/dashboard/components/ProviderPlaceholderScreen';
 
 const Tab = createBottomTabNavigator<ProviderTabParamList>();
 

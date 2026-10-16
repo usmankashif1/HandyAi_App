@@ -1,7 +1,10 @@
+export type AccountRole = 'CUSTOMER' | 'PROVIDER';
+
 export type SignUpRequest = {
     fullName: string;
     email: string;
     password: string;
+    role: AccountRole;
 };
 
 export type SignUpResponse = {
@@ -25,7 +28,7 @@ export type AuthActionResponse = {
 };
 
 export type VerifyOtpResponse = AuthActionResponse & {
-    token: string;
+    token?: string;
 };
 
 export type ResetPasswordOtpResponse = AuthActionResponse & {
