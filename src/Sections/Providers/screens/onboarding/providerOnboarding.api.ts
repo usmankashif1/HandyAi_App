@@ -28,6 +28,16 @@ export type ProviderDocumentKey =
 
 export type ProviderDocuments = Record<ProviderDocumentKey, DocumentPickerAsset>;
 
+type ReactNativeFilePart = {
+    uri: string;
+    name: string;
+    type: string;
+};
+
+type ReactNativeMultipartFormData = FormData & {
+    append(name: string, value: ReactNativeFilePart): void;
+};
+
 const getApiBaseUrl = (): string => {
     const baseUrl = API_URL?.trim().replace(/\/+$/, '');
     if (!baseUrl) {
@@ -207,36 +217,73 @@ const getMimeType = (asset: DocumentPickerAsset): string => {
     return 'application/octet-stream';
 };
 
+const uploadFormData = (
+    url: string,
+    accessToken: string,
+    formData: FormData,
+): Promise<void> => new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('POST', url);
+    request.setRequestHeader('Accept', 'application/json');
+    request.setRequestHeader('Authorization', getAuthorizationHeader(accessToken));
+    request.onload = () => {
+        const isSuccessful = request.status >= 200 && request.status < 300;
+        let body: unknown;
+
+        if (request.responseText) {
+            try {
+                body = JSON.parse(request.responseText);
+            } catch {
+                if (isSuccessful) {
+                    reject(new Error('The server returned an invalid response. Please try again.'));
+                    return;
+                }
+            }
+        }
+
+        if (isSuccessful) {
+            resolve();
+            return;
+        }
+
+        reject(new Error(
+            getResponseMessage(body)
+                ?? `Could not upload provider documents (${request.status}). Please try again.`,
+        ));
+    };
+    request.onerror = () => reject(new Error('Network error while uploading provider documents.'));
+    request.onabort = () => reject(new Error('Provider document upload was cancelled.'));
+
+    try {
+        request.send(formData);
+    } catch (error) {
+        reject(error instanceof Error ? error : new Error('Could not start provider document upload.'));
+    }
+});
+
 export const uploadProviderDocuments = async (
     accessToken: string,
     documents: ProviderDocuments,
 ): Promise<void> => {
     const formData = new FormData();
+    const reactNativeFormData = formData as ReactNativeMultipartFormData;
 
     (Object.keys(documents) as ProviderDocumentKey[]).forEach((key) => {
         const asset = documents[key];
-        const nativeFile = {
-            uri: asset.uri,
-            name: asset.name,
-            type: getMimeType(asset),
-        };
-        formData.append(key, nativeFile as unknown as Blob);
+        if (asset.file) {
+            formData.append(key, asset.file, asset.name);
+        } else {
+            reactNativeFormData.append(key, {
+                uri: asset.uri,
+                name: asset.name,
+                type: getMimeType(asset),
+            });
+        }
     });
 
-    const response = await fetch(`${getApiBaseUrl()}/api/v1/provider/documents`, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            Authorization: getAuthorizationHeader(accessToken),
-        },
-        body: formData,
-    });
-    const body = await readResponse(response);
-
-    if (!response.ok) {
-        throw new Error(
-            getResponseMessage(body)
-                ?? `Could not upload provider documents (${response.status}). Please try again.`,
-        );
-    }
+    await uploadFormData(
+        `${getApiBaseUrl()}/api/v1/provider/documents`,
+        accessToken,
+        formData,
+    );
 };

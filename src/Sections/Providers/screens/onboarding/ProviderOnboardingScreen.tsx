@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../components/AppText';
+import ProviderTimePickerField from './components/ProviderTimePickerField';
 import { Colors } from '../../../../core/theme/colors';
 import { Radii, Spacing } from '../../../../core/theme/designTokens';
 import { showErrorToast, showSuccessToast } from '../../../../core/utils/toast';
@@ -49,13 +50,12 @@ const REQUIRED_DOCUMENTS: {
     key: ProviderDocumentKey;
     title: string;
     detail: string;
-    imagesOnly?: boolean;
 }[] = [
-    { key: 'GOVERNMENT_ID', title: 'Government ID', detail: 'Passport or driving license' },
-    { key: 'RIGHT_TO_WORK', title: 'Right to Work', detail: 'Work permit or visa' },
-    { key: 'LIABILITY_INSURANCE', title: 'Liability Insurance', detail: 'Insurance certificate' },
-    { key: 'REFERENCE', title: 'Reference', detail: 'Reference document' },
-    { key: 'PROFILE_PHOTO', title: 'Profile Photo', detail: 'Choose an image', imagesOnly: true },
+    { key: 'GOVERNMENT_ID', title: 'Government ID', detail: 'Choose any file type' },
+    { key: 'RIGHT_TO_WORK', title: 'Right to Work', detail: 'Choose any file type' },
+    { key: 'LIABILITY_INSURANCE', title: 'Liability Insurance', detail: 'Choose any file type' },
+    { key: 'REFERENCE', title: 'Reference', detail: 'Choose any file type' },
+    { key: 'PROFILE_PHOTO', title: 'Profile Photo', detail: 'Choose any file type' },
 ];
 
 const TIME_PATTERN = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -138,14 +138,14 @@ const ProviderOnboardingScreen = ({ navigation }: Props) => {
         ));
     };
 
-    const pickDocument = async (documentKey: ProviderDocumentKey, imagesOnly = false) => {
+    const pickDocument = async (documentKey: ProviderDocumentKey) => {
         if (isPickingDocument) {
             return;
         }
         setIsPickingDocument(documentKey);
         try {
             const result = await DocumentPicker.getDocumentAsync({
-                type: imagesOnly ? 'image/*' : ['application/pdf', 'image/*'],
+                type: '*/*',
                 copyToCacheDirectory: true,
                 multiple: false,
             });
@@ -374,30 +374,18 @@ const ProviderOnboardingScreen = ({ navigation }: Props) => {
                         })}
                     </View>
                     <View style={styles.timeFields}>
-                        <View style={styles.timeField}>
-                            <AppText style={styles.fieldLabel}>Start time</AppText>
-                            <TextInput
-                                value={startTime}
-                                onChangeText={setStartTime}
-                                placeholder="09:00"
-                                placeholderTextColor="#77859A"
-                                keyboardType="numbers-and-punctuation"
-                                accessibilityLabel="Availability start time"
-                                style={styles.input}
-                            />
-                        </View>
-                        <View style={styles.timeField}>
-                            <AppText style={styles.fieldLabel}>End time</AppText>
-                            <TextInput
-                                value={endTime}
-                                onChangeText={setEndTime}
-                                placeholder="17:00"
-                                placeholderTextColor="#77859A"
-                                keyboardType="numbers-and-punctuation"
-                                accessibilityLabel="Availability end time"
-                                style={styles.input}
-                            />
-                        </View>
+                        <ProviderTimePickerField
+                            label="Start time"
+                            accessibilityLabel="Availability start time"
+                            value={startTime}
+                            onChange={setStartTime}
+                        />
+                        <ProviderTimePickerField
+                            label="End time"
+                            accessibilityLabel="Availability end time"
+                            value={endTime}
+                            onChange={setEndTime}
+                        />
                     </View>
                     <AppText style={styles.helperText}>Use 24-hour time, for example 09:00 to 17:00.</AppText>
                 </View>
@@ -427,7 +415,7 @@ const ProviderOnboardingScreen = ({ navigation }: Props) => {
                                         accessibilityRole="button"
                                         accessibilityLabel={`${selectedDocument ? 'Change' : 'Choose'} ${document.title}`}
                                         disabled={Boolean(isPickingDocument)}
-                                        onPress={() => void pickDocument(document.key, document.imagesOnly)}
+                                        onPress={() => void pickDocument(document.key)}
                                         style={({ pressed }) => [
                                             styles.uploadButton,
                                             selectedDocument && styles.uploadButtonSelected,
@@ -757,9 +745,6 @@ const styles = StyleSheet.create({
     timeFields: {
         flexDirection: 'row',
         gap: RS(12),
-    },
-    timeField: {
-        flex: 1,
     },
     documents: {
         gap: RS(12),

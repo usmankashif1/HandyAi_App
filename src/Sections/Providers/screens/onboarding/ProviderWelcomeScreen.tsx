@@ -86,7 +86,7 @@ const ProviderWelcomeScreen = ({ navigation }: Props) => {
                         resizeMode="cover"
                         accessibilityLabel="Handyman ready to help in a customer's home"
                     />
-                    <View style={[styles.heroCaption, { top: insets.top + RS(24) }]}>
+                    <View style={[styles.heroCaption, { top: insets.top   }]}>
                         <AppText style={styles.heroCaptionText}>Earn money on your schedule</AppText>
                     </View>
                 </View>
