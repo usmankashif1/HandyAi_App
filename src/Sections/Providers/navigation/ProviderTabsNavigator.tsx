@@ -2,8 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import type { ProviderTabParamList } from './provider.types';
 import ProviderJobsScreen from '../screens/jobs/screens/ProviderJobsScreen';
+import ProviderEarningsScreen from '../screens/earnings/screens/ProviderEarningsScreen';
+import ProviderScheduleScreen from '../screens/schedule/screens/ProviderScheduleScreen';
 import ProviderProfileNavigator from '../screens/profile/navigation/ProviderProfileNavigator';
-import ProviderPlaceholderScreen from '../screens/dashboard/components/ProviderPlaceholderScreen';
 
 const Tab = createBottomTabNavigator<ProviderTabParamList>();
 
@@ -69,8 +70,8 @@ const ProviderTabsNavigator = () => (
         })}
     >
         <Tab.Screen name="Jobs" component={ProviderJobsScreen} />
-        <Tab.Screen name="Schedule" component={ProviderPlaceholderScreen} />
-        <Tab.Screen name="Earnings" component={ProviderPlaceholderScreen} />
+        <Tab.Screen name="Schedule" component={ProviderScheduleScreen} />
+        <Tab.Screen name="Earnings" component={ProviderEarningsScreen} />
         <Tab.Screen name="Profile" component={ProviderProfileNavigator} />
     </Tab.Navigator>
 );
