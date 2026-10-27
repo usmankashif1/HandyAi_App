@@ -2,7 +2,9 @@ import { FontSize } from '../../../../../core/theme/designTokens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../../../../core/theme/colors';
+import { RS } from '../../../../../core/utils/responsive';
 import { LocationPermissionProvider } from '../../../../../core/location/LocationPermissionProvider';
 import ChatNavigator from '../../../screens/chat/navigation/ChatNavigator';
 import HistoryNavigator from '../../../screens/history/navigation/HistoryNavigator';
@@ -60,38 +62,47 @@ const TabIcon = ({ name, color, size }: { name: IconName; color: string; size: n
     );
 };
 
-const BottomNavigator = () => (
-    <LocationPermissionProvider>
-        <Tab.Navigator
-            screenOptions={({ route }) => {
-                const isProviderChatOpen = route.name === 'Schedule'
-                    && getFocusedRouteNameFromRoute(route) === 'ProviderChat';
+const BottomNavigator = () => {
+    const insets = useSafeAreaInsets();
+    const tabBarBottomInset = Math.max(insets.bottom, RS(8));
 
-                return {
-                    headerShown: false,
-                    tabBarActiveTintColor: Colors.primaryDark,
-                    tabBarInactiveTintColor: Colors.textSecondary,
-                    tabBarLabelStyle: {
-                        fontSize: FontSize.caption,
-                        fontWeight: '500',
-                    },
-                    tabBarStyle: {
-                        display: isProviderChatOpen ? 'none' : 'flex',
-                        backgroundColor: Colors.surface,
-                        borderTopColor: Colors.border,
-                    },
-                    tabBarIcon: ({ color, size }) => (
-                        <TabIcon name={route.name} color={color} size={size} />
-                    ),
-                };
-            }}
-        >
-            <Tab.Screen name="Chat" component={ChatNavigator} />
-            <Tab.Screen name="Schedule" component={ScheduleNavigator} />
-            <Tab.Screen name="History" component={HistoryNavigator} />
-            <Tab.Screen name="Profile" component={ProfileNavigator} />
-        </Tab.Navigator>
-    </LocationPermissionProvider>
-);
+    return (
+        <LocationPermissionProvider>
+            <Tab.Navigator
+                screenOptions={({ route }) => {
+                    const isProviderChatOpen = route.name === 'Schedule'
+                        && getFocusedRouteNameFromRoute(route) === 'ProviderChat';
+
+                    return {
+                        headerShown: false,
+                        tabBarActiveTintColor: Colors.primaryDark,
+                        tabBarInactiveTintColor: Colors.textSecondary,
+                        tabBarLabelStyle: {
+                            fontSize: FontSize.caption,
+                            fontWeight: '500',
+                        },
+                        safeAreaInsets: { bottom: tabBarBottomInset },
+                        tabBarStyle: {
+                            display: isProviderChatOpen ? 'none' : 'flex',
+                            height: RS(58) + tabBarBottomInset,
+                            paddingTop: RS(4),
+                            paddingBottom: tabBarBottomInset,
+                            backgroundColor: Colors.surface,
+                            borderTopColor: Colors.border,
+                        },
+                        tabBarIcon: ({ color, size }) => (
+                            <TabIcon name={route.name} color={color} size={size} />
+                        ),
+                    };
+                }}
+            >
+                <Tab.Screen name="Chat" component={ChatNavigator} />
+                <Tab.Screen name="Schedule" component={ScheduleNavigator} />
+                <Tab.Screen name="History" component={HistoryNavigator} />
+                <Tab.Screen name="Profile" component={ProfileNavigator} />
+            </Tab.Navigator>
+        </LocationPermissionProvider>
+    );
+};
 
 export default BottomNavigator;

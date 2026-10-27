@@ -14,7 +14,7 @@ import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
 import { showErrorToast, showInfoToast } from '../../../../../core/utils/toast';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import { useAppDispatch, useAppSelector } from '../../../../../store/hooks';
 import { signOut } from '../../../../../store/slices/authSlice';
 import type { ProviderProfileStackParamList } from '../../profile/profile.types';
@@ -94,7 +94,7 @@ const ProviderSettingsScreen = ({ navigation, route }: Props) => {
                     onPress={() => navigation.goBack()}
                     style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
                 >
-                    <Svg width={RS(27)} height={RS(27)} viewBox="0 0 24 24">
+                    <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24">
                         <Path
                             d="m15 18-6-6 6-6"
                             fill="none"
@@ -105,8 +105,7 @@ const ProviderSettingsScreen = ({ navigation, route }: Props) => {
                         />
                     </Svg>
                 </Pressable>
-                <AppText style={styles.heading}>Settings</AppText>
-                <View style={styles.headerSpacer} />
+                <AppText pointerEvents="none" style={styles.heading}>Settings</AppText>
             </View>
 
             <ScrollView
@@ -171,7 +170,7 @@ const NAVY = '#172B4D';
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#F2F6FC',
+        backgroundColor: Colors.background,
     },
     header: {
         minHeight: RS(70),
@@ -180,20 +179,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: RS(23),
     },
     backButton: {
+        zIndex: 1,
         width: RS(42),
         height: RS(44),
         alignItems: 'flex-start',
         justifyContent: 'center',
     },
     heading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
         color: '#111827',
-        fontSize: RS(25),
+        fontSize: RF(25),
         lineHeight: RS(32),
         fontWeight: '700',
-        marginLeft: RS(8),
-    },
-    headerSpacer: {
-        flex: 1,
+        textAlign: 'center',
     },
     content: {
         flexGrow: 1,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     },
     logoutText: {
         color: '#E41E35',
-        fontSize: RS(18),
+        fontSize: RF(18),
         lineHeight: RS(25),
         fontWeight: '600',
     },

@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 type Props = {
     title: string;
@@ -47,17 +47,18 @@ const styles = StyleSheet.create({
         minHeight: RS(112),
     },
     title: {
-        color: Colors.primaryDark,
-        fontSize: RS(16),
+        color: Colors.black,
+        fontSize: RF(16),
+        fontWeight: "bold"
     },
     value: {
-        color: Colors.primaryDark,
-        fontSize: RS(28),
-        fontWeight: '700',
+        color: Colors.black,
+        fontSize: RF(28),
+        fontWeight: 'bold',
     },
     caption: {
         color: Colors.textSecondary,
-        fontSize: RS(14),
+        fontSize: RF(14),
     },
     positiveCaption: {
         color: Colors.secondary,

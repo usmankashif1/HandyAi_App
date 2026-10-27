@@ -11,9 +11,13 @@ import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
 import { Radii, Spacing } from '../../../../../core/theme/designTokens';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
+import { PROVIDER_JOBS } from '../jobs.data';
+import type { ProviderJob, ProviderJobsStackParamList } from '../jobs.types';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 type Category = 'All' | 'Cleaning' | 'Handyman' | 'Electrical' | 'Plumbing';
+type Props = NativeStackScreenProps<ProviderJobsStackParamList, 'JobList'>;
 
 const CATEGORIES: { name: Category; count: number }[] = [
     { name: 'All', count: 5 },
@@ -23,34 +27,8 @@ const CATEGORIES: { name: Category; count: number }[] = [
     { name: 'Plumbing', count: 0 },
 ];
 
-const JOBS = [
-    {
-        category: 'Cleaning',
-        date: 'Today, Apr 26',
-        time: '10:00 AM – 12:00 PM',
-        location: 'Bahria Town, Islamabad',
-        distance: '12 km',
-        duration: '2.5 hrs',
-        price: '$75 – $90 (est.)',
-        rating: '4.8',
-        reviews: '12',
-        status: 'New',
-    },
-    {
-        category: 'Handyman',
-        date: 'Tomorrow, Apr 27',
-        time: '2:00 PM – 4:00 PM',
-        location: 'F-11, Islamabad',
-        distance: '15 km',
-        duration: '2 hrs',
-        price: '$60 – $75 (est.)',
-        rating: '4.9',
-        reviews: '8',
-    },
-];
-
 const LineIcon = ({ kind, color = '#667487' }: { kind: 'calendar' | 'pin' | 'star' | 'bell'; color?: string }) => (
-    <Svg width={RS(22)} height={RS(22)} viewBox="0 0 24 24">
+    <Svg width={RS(28)} height={RS(28)} viewBox="0 0 24 24">
         {kind === 'calendar' && (
             <>
                 <Rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke={color} strokeWidth="1.8" />
@@ -74,18 +52,13 @@ const LineIcon = ({ kind, color = '#667487' }: { kind: 'calendar' | 'pin' | 'sta
     </Svg>
 );
 
-const JobCard = ({ job }: { job: (typeof JOBS)[number] }) => (
+const JobCard = ({ job, onViewDetails }: { job: ProviderJob; onViewDetails: () => void }) => (
     <View style={styles.jobCard}>
         <View style={styles.jobHeading}>
-            <View style={styles.categoryMark}>
+            {/* <View style={styles.categoryMark}>
                 <AppText style={styles.categoryInitial}>{job.category === 'Cleaning' ? '✦' : '⌁'}</AppText>
-            </View>
+            </View> */}
             <View style={styles.jobTitleGroup}>
-                {job.status && (
-                    <View style={styles.newBadge}>
-                        <AppText style={styles.newBadgeText}>{job.status}</AppText>
-                    </View>
-                )}
                 <AppText style={styles.jobTitle}>{job.category}</AppText>
             </View>
             <View style={styles.rating}>
@@ -105,10 +78,10 @@ const JobCard = ({ job }: { job: (typeof JOBS)[number] }) => (
         </View>
         <View style={styles.metaRow}>
             <View style={styles.metaLeft}>
-                <LineIcon kind="star" />
+                <AppText style={styles.currencySign}>$</AppText>
                 <AppText style={styles.detailText}>{job.duration} · {job.price}</AppText>
             </View>
-            <Pressable accessibilityRole="button" style={styles.detailsLink}>
+            <Pressable accessibilityRole="button" onPress={onViewDetails} style={styles.detailsLink}>
                 <AppText style={styles.detailsText}>View Details</AppText>
                 <AppText style={styles.chevron}>›</AppText>
             </Pressable>
@@ -125,15 +98,15 @@ const JobCard = ({ job }: { job: (typeof JOBS)[number] }) => (
     </View>
 );
 
-const ProviderJobsScreen = () => {
+const ProviderJobsScreen = ({ navigation }: Props) => {
     const [activeCategory, setActiveCategory] = useState<Category>('All');
     const visibleJobs = activeCategory === 'All'
-        ? JOBS
-        : JOBS.filter((job) => job.category === activeCategory);
+        ? PROVIDER_JOBS
+        : PROVIDER_JOBS.filter((job) => job.category === activeCategory);
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
-            <StatusBar barStyle="dark-content" backgroundColor="#EAF3F8" />
+            <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
             <View style={styles.header}>
                 <View style={styles.brand}>
                     <View style={styles.brandMark}>
@@ -150,8 +123,16 @@ const ProviderJobsScreen = () => {
                     </View>
                     <AppText style={styles.brandText}>Handy AI</AppText>
                 </View>
-                <Pressable accessibilityRole="button" accessibilityLabel="Notifications" style={styles.notificationButton}>
+                <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="Notifications, 2 unread"
+                    onPress={() => navigation.navigate('Notifications')}
+                    style={styles.notificationButton}
+                >
                     <LineIcon kind="bell" color={NAVY} />
+                    <View style={styles.notificationBadge}>
+                        <AppText style={styles.notificationBadgeText}>2</AppText>
+                    </View>
                 </Pressable>
             </View>
             <ScrollView
@@ -183,7 +164,13 @@ const ProviderJobsScreen = () => {
                 </ScrollView>
                 <View style={styles.jobList}>
                     {visibleJobs.length > 0 ? (
-                        visibleJobs.map((job) => <JobCard key={`${job.category}-${job.date}`} job={job} />)
+                        visibleJobs.map((job) => (
+                            <JobCard
+                                key={job.id}
+                                job={job}
+                                onViewDetails={() => navigation.navigate('JobDetails', { job })}
+                            />
+                        ))
                     ) : (
                         <View style={styles.emptyState}>
                             <AppText style={styles.emptyTitle}>No {activeCategory.toLowerCase()} jobs yet</AppText>
@@ -203,7 +190,7 @@ const NAVY = '#10264D';
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#EAF3F8',
+        backgroundColor: Colors.background,
     },
     header: {
         minHeight: RS(58),
@@ -228,21 +215,44 @@ const styles = StyleSheet.create({
     },
     brandText: {
         color: NAVY,
-        fontSize: RS(23),
+        fontSize: RF(23),
         fontWeight: '700',
     },
     notificationButton: {
         width: RS(42),
         height: RS(42),
+        position: 'relative',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    notificationBadge: {
+        position: 'absolute',
+        top: RS(1),
+        right: RS(1),
+        minWidth: RS(22),
+        height: RS(22),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1.5,
+        borderColor: Colors.background,
+        borderRadius: Radii.pill,
+        backgroundColor: '#D64545',
+        paddingHorizontal: RS(4),
+    },
+    notificationBadgeText: {
+        color: Colors.white,
+        fontSize: RF(10),
+        lineHeight: RS(14),
+        fontWeight: '700',
+        textAlign: 'center',
+        
     },
     scrollContent: {
         paddingBottom: Spacing.lg,
     },
     screenTitle: {
         color: '#172643',
-        fontSize: RS(31),
+        fontSize: RF(31),
         lineHeight: RS(40),
         fontWeight: '700',
         paddingHorizontal: RS(22),
@@ -270,7 +280,7 @@ const styles = StyleSheet.create({
     },
     filterText: {
         color: '#344155',
-        fontSize: RS(14),
+        fontSize: RF(14),
         fontWeight: '500',
     },
     filterTextActive: {
@@ -304,7 +314,7 @@ const styles = StyleSheet.create({
     },
     categoryInitial: {
         color: NAVY,
-        fontSize: RS(24),
+        fontSize: RF(24),
     },
     jobTitleGroup: {
         flex: 1,
@@ -320,13 +330,13 @@ const styles = StyleSheet.create({
     },
     newBadgeText: {
         color: '#26825F',
-        fontSize: RS(12),
+        fontSize: RF(12),
         fontWeight: '600',
     },
     jobTitle: {
         color: '#192944',
-        fontSize: RS(17),
-        fontWeight: '600',
+        fontSize: RF(18),
+        fontWeight: 'bold',
     },
     rating: {
         flexDirection: 'row',
@@ -335,12 +345,12 @@ const styles = StyleSheet.create({
     },
     ratingValue: {
         color: '#4B351B',
-        fontSize: RS(14),
+        fontSize: RF(14),
         fontWeight: '700',
     },
     reviewCount: {
         color: '#A9773A',
-        fontSize: RS(13),
+        fontSize: RF(13),
     },
     detailRow: {
         flexDirection: 'row',
@@ -350,8 +360,15 @@ const styles = StyleSheet.create({
     detailText: {
         flexShrink: 1,
         color: '#252C38',
-        fontSize: RS(14),
+        fontSize: RF(14),
         lineHeight: RS(21),
+    },
+    currencySign: {
+        width: RS(22),
+        color: '#667487',
+        fontSize: RF(18),
+        lineHeight: RS(22),
+        textAlign: 'center',
     },
     metaRow: {
         flexDirection: 'row',
@@ -372,11 +389,11 @@ const styles = StyleSheet.create({
     },
     detailsText: {
         color: '#42749F',
-        fontSize: RS(13),
+        fontSize: RF(13),
     },
     chevron: {
         color: '#42749F',
-        fontSize: RS(22),
+        fontSize: RF(22),
         lineHeight: RS(22),
     },
     jobActions: {
@@ -395,7 +412,7 @@ const styles = StyleSheet.create({
     },
     acceptText: {
         color: Colors.white,
-        fontSize: RS(14),
+        fontSize: RF(14),
         fontWeight: '600',
     },
     declineButton: {
@@ -411,7 +428,7 @@ const styles = StyleSheet.create({
     },
     declineText: {
         color: NAVY,
-        fontSize: RS(14),
+        fontSize: RF(14),
         fontWeight: '600',
     },
     emptyState: {
@@ -422,13 +439,13 @@ const styles = StyleSheet.create({
     },
     emptyTitle: {
         color: NAVY,
-        fontSize: RS(17),
+        fontSize: RF(17),
         fontWeight: '600',
         marginBottom: RS(5),
     },
     emptyText: {
         color: Colors.textSecondary,
-        fontSize: RS(14),
+        fontSize: RF(14),
         textAlign: 'center',
     },
 });

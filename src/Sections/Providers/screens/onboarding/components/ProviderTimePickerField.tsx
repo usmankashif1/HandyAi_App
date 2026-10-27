@@ -13,7 +13,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
 import { Spacing } from '../../../../../core/theme/designTokens';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 type ProviderTimePickerFieldProps = {
     label: string;
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
     label: {
         color: '#718096',
-        fontSize: RS(15),
+        fontSize: RF(15),
         lineHeight: RS(21),
         marginBottom: RS(6),
     },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     },
     valueText: {
         color: '#10264D',
-        fontSize: RS(16),
+        fontSize: RF(16),
     },
     modalBackdrop: {
         flex: 1,
@@ -211,12 +211,12 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         color: Colors.textPrimary,
-        fontSize: RS(16),
+        fontSize: RF(16),
         fontWeight: '600',
     },
     modalAction: {
         color: Colors.primaryDark,
-        fontSize: RS(16),
+        fontSize: RF(16),
         fontWeight: '600',
     },
     pressed: {

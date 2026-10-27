@@ -20,7 +20,7 @@ import ProviderTimePickerField from './components/ProviderTimePickerField';
 import { Colors } from '../../../../core/theme/colors';
 import { Radii, Spacing } from '../../../../core/theme/designTokens';
 import { showErrorToast, showSuccessToast } from '../../../../core/utils/toast';
-import { RS } from '../../../../core/utils/responsive';
+import { RF, RS } from '../../../../core/utils/responsive';
 import { useAppSelector } from '../../../../store/hooks';
 import type { ProviderStackParamList } from '../../navigation/provider.types';
 import {
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     },
     stepLabel: {
         color: NAVY,
-        fontSize: RS(16),
+        fontSize: RF(16),
         fontWeight: '500',
     },
     topBarSpacer: {
@@ -619,20 +619,20 @@ const styles = StyleSheet.create({
     },
     title: {
         color: NAVY,
-        fontSize: RS(27),
+        fontSize: RF(27),
         lineHeight: RS(35),
         fontWeight: '700',
         marginBottom: RS(8),
     },
     description: {
         color: '#667487',
-        fontSize: RS(16),
+        fontSize: RF(16),
         lineHeight: RS(24),
         marginBottom: RS(22),
     },
     fieldLabel: {
         color: '#718096',
-        fontSize: RS(15),
+        fontSize: RF(15),
         lineHeight: RS(21),
         marginBottom: RS(6),
     },
@@ -647,7 +647,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         paddingHorizontal: RS(15),
         color: NAVY,
-        fontSize: RS(16),
+        fontSize: RF(16),
         marginBottom: RS(18),
     },
     multilineInput: {
@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         padding: RS(14),
         color: NAVY,
-        fontSize: RS(16),
+        fontSize: RF(16),
         lineHeight: RS(22),
         marginBottom: RS(18),
     },
@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     },
     categoryLabel: {
         color: NAVY,
-        fontSize: RS(15),
+        fontSize: RF(15),
     },
     categoryLabelSelected: {
         fontWeight: '700',
@@ -697,7 +697,7 @@ const styles = StyleSheet.create({
     },
     helperText: {
         color: '#718096',
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(19),
         marginTop: RS(7),
     },
@@ -706,13 +706,13 @@ const styles = StyleSheet.create({
     },
     errorText: {
         color: Colors.failed,
-        fontSize: RS(14),
+        fontSize: RF(14),
         lineHeight: RS(20),
         marginTop: RS(10),
     },
     retryText: {
         color: NAVY,
-        fontSize: RS(14),
+        fontSize: RF(14),
         fontWeight: '700',
         textDecorationLine: 'underline',
     },
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
     },
     dayLabel: {
         color: NAVY,
-        fontSize: RS(14),
+        fontSize: RF(14),
     },
     dayLabelSelected: {
         fontWeight: '700',
@@ -767,13 +767,13 @@ const styles = StyleSheet.create({
     },
     documentTitle: {
         color: NAVY,
-        fontSize: RS(15),
+        fontSize: RF(15),
         lineHeight: RS(20),
         fontWeight: '600',
     },
     documentDetail: {
         color: '#6B7787',
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(18),
     },
     uploadButton: {
@@ -789,7 +789,7 @@ const styles = StyleSheet.create({
     },
     uploadText: {
         color: NAVY,
-        fontSize: RS(13),
+        fontSize: RF(13),
         fontWeight: '600',
     },
     successCard: {
@@ -801,13 +801,13 @@ const styles = StyleSheet.create({
     },
     successTitle: {
         color: '#218D70',
-        fontSize: RS(18),
+        fontSize: RF(18),
         fontWeight: '700',
         marginBottom: RS(6),
     },
     successDescription: {
         color: '#218D70',
-        fontSize: RS(14),
+        fontSize: RF(14),
         lineHeight: RS(20),
     },
     bottomAction: {
@@ -827,7 +827,7 @@ const styles = StyleSheet.create({
     },
     nextText: {
         color: Colors.white,
-        fontSize: RS(17),
+        fontSize: RF(17),
         fontWeight: '600',
     },
     pressed: {

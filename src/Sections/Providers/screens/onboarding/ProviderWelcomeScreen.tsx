@@ -14,7 +14,7 @@ import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../components/AppText';
 import { Colors } from '../../../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../../../core/theme/designTokens';
-import { RS } from '../../../../core/utils/responsive';
+import { RF, RS } from '../../../../core/utils/responsive';
 import type { ProviderStackParamList } from '../../navigation/provider.types';
 
 type Props = NativeStackScreenProps<ProviderStackParamList, 'Onboarding'>;
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     title: {
         ...TypeScale.heading,
         color: NAVY,
-        fontSize: RS(27),
+        fontSize: RF(27),
         lineHeight: RS(34),
         letterSpacing: RS(-0.6),
         marginBottom: Spacing.sm,

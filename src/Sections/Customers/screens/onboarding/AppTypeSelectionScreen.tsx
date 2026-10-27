@@ -14,7 +14,7 @@ import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../components/AppText';
 import { Colors } from '../../../../core/theme/colors';
 import { Radii } from '../../../../core/theme/designTokens';
-import { RS } from '../../../../core/utils/responsive';
+import { RF, RS } from '../../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../navigation/auth/auth.types';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'AppTypeSelection'>;
@@ -80,14 +80,14 @@ const AppTypeSelectionScreen = ({ navigation }: Props) => (
             showsVerticalScrollIndicator={false}
         >
             <View style={styles.header}>
-                <Pressable
+                {/* <Pressable
                     accessibilityRole="button"
                     accessibilityLabel="Go back"
                     onPress={() => BackHandler.exitApp()}
                     style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
                 >
                     <BackIcon />
-                </Pressable>
+                </Pressable> */}
                 <AppText style={styles.heading}>Welcome to Handy AI</AppText>
             </View>
             <AppText style={styles.subtitle}>How can we help you today?</AppText>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         paddingBottom: RS(18),
     },
     header: {
-        height: RS(50),
+        // height: RS(50),
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -151,21 +151,22 @@ const styles = StyleSheet.create({
     },
     heading: {
         color: '#0C1F42',
-        fontSize: RS(23),
+        fontSize: RF(23),
         fontWeight: '700',
         textAlign: 'center',
     },
     subtitle: {
         color: Colors.textSecondary,
-        fontSize: RS(18),
+        fontSize: RF(18),
         lineHeight: RS(27),
         textAlign: 'center',
-        marginTop: RS(20),
+        marginTop: RS(10),
         marginBottom: RS(30),
     },
     cards: {
         gap: RS(16),
     },
+
     card: {
         minHeight: RS(228),
         flexDirection: 'row',
@@ -190,14 +191,14 @@ const styles = StyleSheet.create({
     },
     cardTitle: {
         color: '#0C1F42',
-        fontSize: RS(22),
+        fontSize: RF(22),
         lineHeight: RS(29),
         fontWeight: '700',
         marginBottom: RS(8),
     },
     cardDescription: {
         color: Colors.textSecondary,
-        fontSize: RS(16),
+        fontSize: RF(16),
         lineHeight: RS(23),
         marginBottom: RS(18),
     },
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
     },
     actionText: {
         color: Colors.white,
-        fontSize: RS(15),
+        fontSize: RF(15),
         fontWeight: '600',
         textAlign: 'center',
     },
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     },
     footerText: {
         color: Colors.textSecondary,
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(20),
         textAlign: 'center',
     },

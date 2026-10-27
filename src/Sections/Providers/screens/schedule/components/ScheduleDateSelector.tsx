@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS, RW } from '../../../../../core/utils/responsive';
+import { RF, RS, RW } from '../../../../../core/utils/responsive';
 
 type Props = {
     selectedDate: Date;
@@ -52,11 +52,11 @@ const ScheduleDateSelector = ({ selectedDate, onSelectDate }: Props) => {
                     hitSlop={8}
                     style={styles.weekButton}
                 >
-                    <Svg width={RS(24)} height={RS(24)} viewBox="0 0 24 24">
+                    <Svg width={RS(28)} height={RS(28)} viewBox="0 0 24 24">
                         <Path
                             d="m15 18-6-6 6-6"
                             fill="none"
-                            stroke={Colors.primaryDark}
+                            stroke={Colors.black}
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -71,11 +71,11 @@ const ScheduleDateSelector = ({ selectedDate, onSelectDate }: Props) => {
                     hitSlop={8}
                     style={styles.weekButton}
                 >
-                    <Svg width={RS(24)} height={RS(24)} viewBox="0 0 24 24">
+                    <Svg width={RS(28)} height={RS(28)} viewBox="0 0 24 24">
                         <Path
                             d="m9 18 6-6-6-6"
                             fill="none"
-                            stroke={Colors.primaryDark}
+                            stroke={Colors.black}
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     },
     weekLabel: {
         color: Colors.textSecondary,
-        fontSize: RS(14),
+        fontSize: RF(18),
         fontWeight: '500',
     },
     dateRow: {
@@ -151,21 +151,21 @@ const styles = StyleSheet.create({
     },
     weekday: {
         color: Colors.textSecondary,
-        fontSize: RS(14),
+        fontSize: RF(16),
     },
     dateCircle: {
-        width: RW(35),
-        paddingVertical: RS(5),
+        paddingVertical: RS(12),
+        paddingHorizontal: RS(8),
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: RS(20),
+        borderRadius: RS(50),
     },
     selectedCircle: {
         backgroundColor: Colors.primary,
     },
     dateNumber: {
-        color: Colors.primaryDark,
-        fontSize: RS(16),
+        color: Colors.black,
+        fontSize: RF(16),
     },
     selectedText: {
         color: Colors.white,

@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { ScheduleAppointment } from '../schedule.types';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const ScheduleAppointmentCard = ({ appointment }: Props) => (
-    <View style={[styles.card, { borderLeftColor: appointment.accentColor }]}>
+    <View style={styles.card}>
         <View style={styles.topRow}>
             <AppText style={styles.time}>
                 {appointment.startTime} - {appointment.endTime}
@@ -73,9 +73,8 @@ export default ScheduleAppointmentCard;
 
 const styles = StyleSheet.create({
     card: {
-        borderWidth: 1,
-        borderLeftWidth: RS(4),
-        borderColor: Colors.primaryLight,
+        borderWidth: RS(1),
+        borderColor: Colors.border,
         borderRadius: RS(12),
         backgroundColor: Colors.white,
         padding: RS(12),
@@ -94,8 +93,8 @@ const styles = StyleSheet.create({
     },
     time: {
         flexShrink: 1,
-        color: Colors.primaryDark,
-        fontSize: RS(14),
+        color: Colors.black,
+        fontSize: RF(14),
         fontWeight: '600',
     },
     statusBadge: {
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
     },
     statusText: {
         color: Colors.secondary,
-        fontSize: RS(12),
+        fontSize: RF(14),
         fontWeight: '500',
     },
     details: {
@@ -115,8 +114,8 @@ const styles = StyleSheet.create({
         gap: RS(9),
     },
     serviceImage: {
-        width: RS(48),
-        height: RS(48),
+        width: RS(60),
+        height: RS(60),
         borderRadius: RS(9),
     },
     info: {
@@ -124,8 +123,8 @@ const styles = StyleSheet.create({
         gap: RS(3),
     },
     service: {
-        color: Colors.primaryDark,
-        fontSize: RS(18),
+        color: Colors.black,
+        fontSize: RF(18),
         fontWeight: '600',
     },
     detailRow: {
@@ -134,16 +133,16 @@ const styles = StyleSheet.create({
         gap: RS(5),
     },
     avatar: {
-        width: RS(22),
-        height: RS(22),
+        width: RS(24),
+        height: RS(24),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: RS(50),
         backgroundColor: Colors.primaryLight,
     },
     avatarText: {
-        color: Colors.primaryDark,
-        fontSize: RS(11),
+        color: Colors.black,
+        fontSize: RF(12),
         lineHeight: RS(16),
         fontWeight: '600',
         includeFontPadding: false,
@@ -153,12 +152,12 @@ const styles = StyleSheet.create({
     customer: {
         flexShrink: 1,
         color: Colors.textPrimary,
-        fontSize: RS(14),
+        fontSize: RF(16),
     },
     location: {
         flex: 1,
         color: Colors.textSecondary,
-        fontSize: RS(11),
+        fontSize: RF(14),
     },
     rating: {
         flexDirection: 'row',
@@ -167,10 +166,10 @@ const styles = StyleSheet.create({
     },
     star: {
         color: Colors.warning,
-        fontSize: RS(14),
+        fontSize: RF(14),
     },
     ratingText: {
         color: Colors.primaryDark,
-        fontSize: RS(12),
+        fontSize: RF(14),
     },
 });

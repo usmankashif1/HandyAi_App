@@ -1,7 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RF, RS } from '../../../core/utils/responsive';
 import type { ProviderTabParamList } from './provider.types';
-import ProviderJobsScreen from '../screens/jobs/screens/ProviderJobsScreen';
+import ProviderJobsNavigator from '../screens/jobs/navigation/ProviderJobsNavigator';
 import ProviderEarningsScreen from '../screens/earnings/screens/ProviderEarningsScreen';
 import ProviderScheduleScreen from '../screens/schedule/screens/ProviderScheduleScreen';
 import ProviderProfileNavigator from '../screens/profile/navigation/ProviderProfileNavigator';
@@ -47,33 +50,41 @@ const TabIcon = ({ name, color }: { name: keyof ProviderTabParamList; color: str
     );
 };
 
-const ProviderTabsNavigator = () => (
-    <Tab.Navigator
-        initialRouteName="Jobs"
-        screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarActiveTintColor: '#10264D',
-            tabBarInactiveTintColor: '#626D7D',
-            tabBarLabelStyle: {
-                fontSize: 12,
-                fontWeight: '500',
-                marginTop: 2,
-            },
-            tabBarIcon: ({ color }) => <TabIcon name={route.name} color={color} />,
-            tabBarStyle: {
-                height: 64,
-                paddingTop: 7,
-                paddingBottom: 5,
-                borderTopColor: '#D7DFE9',
-                backgroundColor: '#FFFFFF',
-            },
-        })}
-    >
-        <Tab.Screen name="Jobs" component={ProviderJobsScreen} />
-        <Tab.Screen name="Schedule" component={ProviderScheduleScreen} />
-        <Tab.Screen name="Earnings" component={ProviderEarningsScreen} />
-        <Tab.Screen name="Profile" component={ProviderProfileNavigator} />
-    </Tab.Navigator>
-);
+const ProviderTabsNavigator = () => {
+    const insets = useSafeAreaInsets();
+    const tabBarBottomInset = Math.max(insets.bottom, RS(8));
+
+    return (
+        <Tab.Navigator
+            initialRouteName="Jobs"
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarActiveTintColor: '#10264D',
+                tabBarInactiveTintColor: '#626D7D',
+                tabBarLabelStyle: {
+                    fontSize: RF(12),
+                    fontWeight: '500',
+                    marginTop: 2,
+                },
+                safeAreaInsets: { bottom: tabBarBottomInset },
+                tabBarIcon: ({ color }) => <TabIcon name={route.name} color={color} />,
+                tabBarStyle: ['JobDetails', 'ClientChat', 'Notifications'].includes(getFocusedRouteNameFromRoute(route) ?? '')
+                    ? { display: 'none' }
+                    : {
+                        height: RS(64) + tabBarBottomInset,
+                        paddingTop: RS(7),
+                        paddingBottom: tabBarBottomInset,
+                        borderTopColor: '#D7DFE9',
+                        backgroundColor: '#FFFFFF',
+                    },
+            })}
+        >
+            <Tab.Screen name="Jobs" component={ProviderJobsNavigator} />
+            <Tab.Screen name="Schedule" component={ProviderScheduleScreen} />
+            <Tab.Screen name="Earnings" component={ProviderEarningsScreen} />
+            <Tab.Screen name="Profile" component={ProviderProfileNavigator} />
+        </Tab.Navigator>
+    );
+};
 
 export default ProviderTabsNavigator;

@@ -1,24 +1,26 @@
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { ScheduleCategory } from '../schedule.types';
 
 const CATEGORIES: ScheduleCategory[] = ['All', 'Cleaning', 'Plumbing', 'Handyman'];
 
 type Props = {
     visible: boolean;
-    selectedCategory: ScheduleCategory;
+    draftCategory: ScheduleCategory;
     onSelectCategory: (category: ScheduleCategory) => void;
     onClose: () => void;
+    onApply: () => void;
     onReset: () => void;
 };
 
 const ScheduleFilterSheet = ({
     visible,
-    selectedCategory,
+    draftCategory,
     onSelectCategory,
     onClose,
+    onApply,
     onReset,
 }: Props) => (
     <Modal
@@ -45,7 +47,7 @@ const ScheduleFilterSheet = ({
                 <AppText style={styles.label}>Service type</AppText>
                 <View style={styles.options}>
                     {CATEGORIES.map((category) => {
-                        const selected = selectedCategory === category;
+                        const selected = draftCategory === category;
                         return (
                             <Pressable
                                 key={category}
@@ -63,7 +65,7 @@ const ScheduleFilterSheet = ({
                 </View>
                 <Pressable
                     accessibilityRole="button"
-                    onPress={onClose}
+                    onPress={onApply}
                     style={styles.applyButton}
                 >
                     <AppText style={styles.applyText}>Show schedule</AppText>
@@ -104,18 +106,18 @@ const styles = StyleSheet.create({
         marginBottom: RS(22),
     },
     title: {
-        color: Colors.primaryDark,
-        fontSize: RS(20),
+        color: Colors.black,
+        fontSize: RF(20),
         fontWeight: '600',
     },
     reset: {
-        color: Colors.primary,
-        fontSize: RS(14),
+        color: Colors.black,
+        fontSize: RF(14),
         fontWeight: '500',
     },
     label: {
         color: Colors.textSecondary,
-        fontSize: RS(13),
+        fontSize: RF(14),
         marginBottom: RS(12),
     },
     options: {
@@ -137,8 +139,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.primaryDark,
     },
     optionText: {
-        color: Colors.primaryDark,
-        fontSize: RS(13),
+        color: Colors.black,
+        fontSize: RF(14),
     },
     selectedOptionText: {
         color: Colors.white,
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
     },
     applyText: {
         color: Colors.white,
-        fontSize: RS(15),
+        fontSize: RF(16),
         fontWeight: '600',
     },
 });

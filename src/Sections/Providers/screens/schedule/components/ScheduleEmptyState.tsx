@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 type Props = {
     hasSearchOrFilter: boolean;
@@ -36,18 +36,18 @@ const styles = StyleSheet.create({
         paddingVertical: RS(20),
     },
     illustration: {
-        width: RS(145),
-        height: RS(125),
-        marginBottom: RS(8),
+        width: RS(200),
+        height: RS(150),
+        marginBottom: RS(5),
     },
     title: {
-        color: Colors.primaryDark,
-        fontSize: RS(14),
+        color: Colors.black,
+        fontSize: RF(16),
         textAlign: 'center',
     },
     subtitle: {
         color: Colors.textSecondary,
-        fontSize: RS(12),
+        fontSize: RF(14),
         textAlign: 'center',
         marginTop: RS(5),
     },

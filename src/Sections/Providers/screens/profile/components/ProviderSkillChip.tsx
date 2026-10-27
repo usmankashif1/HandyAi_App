@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import AppText from '../../../../../components/AppText';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 const ProviderSkillChip = ({ label }: { label: string }) => (
     <View style={styles.chip}>
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     },
     label: {
         color: NAVY,
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(19),
     },
 });

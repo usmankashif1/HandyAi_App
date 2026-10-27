@@ -1,0 +1,47 @@
+import type { ProviderJob } from './jobs.types';
+
+export const PROVIDER_JOBS: ProviderJob[] = [
+    {
+        id: 'job-cleaning-9284',
+        category: 'Cleaning',
+        title: 'Deep House Cleaning',
+        jobNumber: 'JR-9284',
+        date: 'Today, Apr 26',
+        time: '10:00 AM – 12:00 PM',
+        location: 'Bahria Town, Islamabad',
+        fullAddress: 'House 123, Street 4, Sector C, Bahria Town, Islamabad',
+        distance: '12 km',
+        duration: '2.5 hrs',
+        price: '$75 – $90 (est.)',
+        rating: '4.8',
+        reviews: '12',
+        clientName: 'Sarah Johnson',
+        description: [
+            'Deep cleaning of 3 bedrooms, 2 bathrooms, and a kitchen.',
+            'Focus on kitchen appliances and bathroom tiles.',
+            'Client will provide cleaning supplies.',
+        ],
+        status: 'New',
+    },
+    {
+        id: 'job-handyman-7361',
+        category: 'Handyman',
+        title: 'General Home Repairs',
+        jobNumber: 'JR-7361',
+        date: 'Tomorrow, Apr 27',
+        time: '2:00 PM – 4:00 PM',
+        location: 'F-11, Islamabad',
+        fullAddress: 'House 18, Street 6, F-11 Markaz, Islamabad',
+        distance: '15 km',
+        duration: '2 hrs',
+        price: '$60 – $75 (est.)',
+        rating: '4.9',
+        reviews: '8',
+        clientName: 'Michael Ross',
+        description: [
+            'Repair a loose kitchen cabinet door and replace its hinges.',
+            'Check and tighten two bathroom towel rails.',
+            'Please bring a basic home repair toolkit.',
+        ],
+    },
+];

@@ -8,11 +8,12 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { FontSize, TypeScale } from '../../../../../core/theme/designTokens';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { ProviderTabParamList } from '../../../navigation/provider.types';
-import EarningsHeader from '../components/EarningsHeader';
 import EarningsMetricCard from '../components/EarningsMetricCard';
 import PayoutRow from '../components/PayoutRow';
 import type { ProviderPayout } from '../earnings.types';
@@ -35,12 +36,33 @@ const ProviderEarningsScreen = ({ navigation }: Props) => {
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
-            <EarningsHeader onBackPress={() => navigation.navigate('Jobs')} />
+            <View style={styles.header}>
+                <View style={styles.titleRow}>
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel="Back to jobs"
+                        onPress={() => navigation.navigate('Jobs')}
+                        hitSlop={8}
+                        style={styles.backButton}
+                    >
+                        <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24">
+                            <Path
+                                d="m15 18-6-6 6-6"
+                                fill="none"
+                                stroke={Colors.primaryDark}
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </Svg>
+                    </Pressable>
+                    <AppText style={styles.title}>Earnings</AppText>
+                </View>
+            </View>
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                <AppText style={styles.screenTitle}>Earnings</AppText>
                 <View style={styles.metricsRow}>
                     <EarningsMetricCard
                         title="Total Earned"
@@ -96,17 +118,32 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.background,
     },
+    header: {
+        paddingHorizontal: RS(18),
+        paddingTop: RS(8),
+        paddingBottom: RS(12),
+        gap: RS(20),
+    },
+    titleRow: {
+        minHeight: RS(40),
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: RS(12),
+    },
+    backButton: {
+        width: RS(30),
+        height: RS(40),
+        justifyContent: 'center',
+    },
+    title: {
+        ...TypeScale.heading,
+        color: Colors.textPrimary,
+        fontSize: FontSize.heroTitle,
+    },
     scrollContent: {
         gap: RS(12),
         paddingHorizontal: RS(20),
         paddingBottom: RS(24),
-    },
-    screenTitle: {
-        color: Colors.primaryDark,
-        fontSize: RS(30),
-        fontWeight: '700',
-        marginTop: RS(12),
-        marginBottom: RS(2),
     },
     metricsRow: {
         flexDirection: 'row',
@@ -120,13 +157,13 @@ const styles = StyleSheet.create({
         marginBottom: RS(2),
     },
     sectionTitle: {
-        color: Colors.primaryDark,
-        fontSize: RS(20),
+        color: Colors.black,
+        fontSize: RF(20),
         fontWeight: '600',
     },
     viewAll: {
-        color: Colors.primaryDark,
-        fontSize: RS(15),
+        color: Colors.black,
+        fontSize: RF(16),
         fontWeight: '500',
         textDecorationLine: 'underline',
     },

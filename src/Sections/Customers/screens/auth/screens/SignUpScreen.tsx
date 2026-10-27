@@ -16,7 +16,7 @@ import AppButton from '../../../../../components/AppButton';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
 import { FontSize, Radii, Spacing, TypeScale } from '../../../../../core/theme/designTokens';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { AuthStackParamList } from '../../../navigation/auth/auth.types';
 import SignUpField from '../components/SignUpField';
 import { signUp } from '../auth.api';
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     title: {
         ...TypeScale.heading,
         color: '#10182F',
-        fontSize: RS(27),
+        fontSize: RF(27),
         lineHeight: RS(36),
         marginBottom: Spacing.md,
     },

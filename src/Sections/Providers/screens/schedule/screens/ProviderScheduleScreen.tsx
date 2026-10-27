@@ -1,20 +1,27 @@
 import { useMemo, useState } from 'react';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import {
+    Pressable,
     ScrollView,
     StatusBar,
     StyleSheet,
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
+import { FontSize, TypeScale } from '../../../../../core/theme/designTokens';
 import { RS } from '../../../../../core/utils/responsive';
+import type { ProviderTabParamList } from '../../../navigation/provider.types';
 import ScheduleAppointmentCard from '../components/ScheduleAppointmentCard';
 import ScheduleDateSelector from '../components/ScheduleDateSelector';
 import ScheduleEmptyState from '../components/ScheduleEmptyState';
 import ScheduleFilterSheet from '../components/ScheduleFilterSheet';
 import ScheduleSearchBar from '../components/ScheduleSearchBar';
 import type { ScheduleAppointment, ScheduleCategory } from '../schedule.types';
+
+type Props = BottomTabScreenProps<ProviderTabParamList, 'Schedule'>;
 
 const getDateKey = (date: Date) => {
     const year = date.getFullYear();
@@ -61,7 +68,7 @@ const createSampleAppointments = (today: Date): ScheduleAppointment[] => [
         customer: 'Alex Green',
         location: 'E-11 Sector',
         rating: '5.0',
-        accentColor: '#B2A15C',
+        accentColor: Colors.amberDark,
     },
     {
         id: 'schedule-4',
@@ -72,7 +79,7 @@ const createSampleAppointments = (today: Date): ScheduleAppointment[] => [
         customer: 'Alex Johnson',
         location: 'Bahria Town, Islamabad',
         rating: '4.9',
-        accentColor: '#B2A15C',
+        accentColor: Colors.amberDark,
     },
     {
         id: 'schedule-5',
@@ -87,7 +94,7 @@ const createSampleAppointments = (today: Date): ScheduleAppointment[] => [
     },
 ];
 
-const ProviderScheduleScreen = () => {
+const ProviderScheduleScreen = ({ navigation }: Props) => {
     const [selectedDate, setSelectedDate] = useState(() => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -95,8 +102,19 @@ const ProviderScheduleScreen = () => {
     });
     const [query, setQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<ScheduleCategory>('All');
+    const [draftCategory, setDraftCategory] = useState<ScheduleCategory>('All');
     const [filterVisible, setFilterVisible] = useState(false);
     const [appointments] = useState(() => createSampleAppointments(new Date()));
+
+    const openFilters = () => {
+        setDraftCategory(selectedCategory);
+        setFilterVisible(true);
+    };
+
+    const applyFilters = () => {
+        setSelectedCategory(draftCategory);
+        setFilterVisible(false);
+    };
 
     const visibleAppointments = useMemo(() => {
         const normalizedQuery = query.trim().toLowerCase();
@@ -121,13 +139,33 @@ const ProviderScheduleScreen = () => {
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
-            <StatusBar barStyle="light-content" backgroundColor={Colors.primaryDark} />
+            <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
             <View style={styles.header}>
-                <AppText style={styles.title}>Schedule</AppText>
+                <View style={styles.titleRow}>
+                    <Pressable
+                        accessibilityRole="button"
+                        accessibilityLabel="Back to jobs"
+                        onPress={() => navigation.navigate('Jobs')}
+                        hitSlop={8}
+                        style={styles.backButton}
+                    >
+                        <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24">
+                            <Path
+                                d="m15 18-6-6 6-6"
+                                fill="none"
+                                stroke={Colors.black}
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </Svg>
+                    </Pressable>
+                    <AppText style={styles.title}>Schedule</AppText>
+                </View>
                 <ScheduleSearchBar
                     query={query}
                     onChangeQuery={setQuery}
-                    onPressFilter={() => setFilterVisible(true)}
+                    onPressFilter={openFilters}
                     activeFilterCount={selectedCategory === 'All' ? 0 : 1}
                 />
             </View>
@@ -147,6 +185,7 @@ const ProviderScheduleScreen = () => {
                         {visibleAppointments.length} {visibleAppointments.length === 1 ? 'job' : 'jobs'}
                     </AppText>
                 </View>
+
                 {visibleAppointments.length > 0 ? (
                     <View style={styles.appointmentList}>
                         {visibleAppointments.map((appointment) => (
@@ -162,10 +201,11 @@ const ProviderScheduleScreen = () => {
             </ScrollView>
             <ScheduleFilterSheet
                 visible={filterVisible}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
+                draftCategory={draftCategory}
+                onSelectCategory={setDraftCategory}
                 onClose={() => setFilterVisible(false)}
-                onReset={() => setSelectedCategory('All')}
+                onApply={applyFilters}
+                onReset={() => setDraftCategory('All')}
             />
         </SafeAreaView>
     );
@@ -177,18 +217,29 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: Colors.background,
+
     },
     header: {
-        backgroundColor: Colors.primaryDark,
         paddingHorizontal: RS(18),
         paddingTop: RS(8),
         paddingBottom: RS(12),
-        gap: RS(8),
+        gap: RS(20),
+    },
+    titleRow: {
+        minHeight: RS(40),
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: RS(12),
+    },
+    backButton: {
+        width: RS(30),
+        height: RS(40),
+        justifyContent: 'center',
     },
     title: {
-        color: Colors.white,
-        fontSize: RS(27),
-        fontWeight: '600',
+        ...TypeScale.heading,
+        color: Colors.textPrimary,
+        fontSize: FontSize.heroTitle,
     },
     scrollView: {
         flex: 1,
@@ -207,13 +258,13 @@ const styles = StyleSheet.create({
         marginBottom: RS(10),
     },
     listTitle: {
-        color: Colors.primaryDark,
-        fontSize: RS(16),
+        ...TypeScale.body,
+        color: Colors.black,
         fontWeight: '600',
     },
     count: {
+        ...TypeScale.body,
         color: Colors.textSecondary,
-        fontSize: RS(14),
     },
     appointmentList: {
         gap: RS(10),

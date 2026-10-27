@@ -1,9 +1,7 @@
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
     Image,
     Pressable,
     ScrollView,
@@ -15,22 +13,37 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { Radii } from '../../../../../core/theme/designTokens';
-import { RS } from '../../../../../core/utils/responsive';
+import { FontSize, Radii } from '../../../../../core/theme/designTokens';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import { showInfoToast } from '../../../../../core/utils/toast';
-import { useAppSelector } from '../../../../../store/hooks';
 import type { ProviderTabParamList } from '../../../navigation/provider.types';
 import ProviderSkillChip from '../components/ProviderSkillChip';
 import type { ProviderProfileStackParamList } from '../profile.types';
-import { fetchProviderProfile, type ProviderProfile } from '../providerProfile.api';
+import type { ProviderProfile } from '../providerProfile.api';
 
 const PROFILE_NAME = 'Ahmed Khan';
 const PROFESSION = 'Professional Handyman';
 const SKILLS = ['Handyman', 'Electrical', 'Plumbing', 'Furniture Assembly', 'General Repairs'];
 const FALLBACK_AVATAR = require('../../../../../assets/images/handyMan.jpg');
+const DUMMY_PROFILE: ProviderProfile = {
+    id: 'provider-demo',
+    bio: 'Experienced handyman providing reliable home repair and maintenance services.',
+    postcodeCoverage: ['SW1A 1AA', 'W1A 1AA'],
+    status: 'APPROVED',
+    rejectionReason: null,
+    categories: SKILLS.map((name, index) => ({ id: `category-${index + 1}`, name })),
+    availability: [
+        { id: 'availability-1', dayOfWeek: 1, startTime: '09:00', endTime: '17:00' },
+        { id: 'availability-2', dayOfWeek: 2, startTime: '09:00', endTime: '17:00' },
+        { id: 'availability-3', dayOfWeek: 3, startTime: '09:00', endTime: '17:00' },
+        { id: 'availability-4', dayOfWeek: 4, startTime: '09:00', endTime: '17:00' },
+        { id: 'availability-5', dayOfWeek: 5, startTime: '09:00', endTime: '17:00' },
+    ],
+    documents: [],
+};
 
 const ChevronIcon = ({ direction = 'left' }: { direction?: 'left' | 'right' }) => (
-    <Svg width={RS(25)} height={RS(25)} viewBox="0 0 24 24">
+    <Svg width={RS(30)} height={RS(30)} viewBox="0 0 24 24">
         <Path
             d={direction === 'left' ? 'm15 18-6-6 6-6' : 'm9 18 6-6-6-6'}
             fill="none"
@@ -43,7 +56,7 @@ const ChevronIcon = ({ direction = 'left' }: { direction?: 'left' | 'right' }) =
 );
 
 const SettingsIcon = () => (
-    <Svg width={RS(27)} height={RS(27)} viewBox="0 0 24 24">
+    <Svg width={RS(40)} height={RS(40)} viewBox="0 0 24 24">
         <Path
             d="m19.4 13.5 1.4 1.1-1.4 2.4-1.7-.6a7.8 7.8 0 0 1-1.5.9l-.3 1.8h-2.8l-.3-1.8a7.8 7.8 0 0 1-1.5-.9l-1.7.6-1.4-2.4 1.4-1.1a7 7 0 0 1 0-1.8l-1.4-1.1 1.4-2.4 1.7.6a7.8 7.8 0 0 1 1.5-.9l.3-1.8h2.8l.3 1.8a7.8 7.8 0 0 1 1.5.9l1.7-.6 1.4 2.4-1.4 1.1a7 7 0 0 1 0 1.8ZM14.5 10a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2Z"
             transform="translate(-2 -2)"
@@ -81,46 +94,7 @@ const StarIcon = ({ size = 21 }: { size?: number }) => (
 
 const ProviderProfileScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<ProviderProfileStackParamList>>();
-    const { token } = useAppSelector((state) => state.auth);
-    const [profile, setProfile] = useState<ProviderProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string>();
-    const [retryCount, setRetryCount] = useState(0);
-    const [hasPhotoError, setHasPhotoError] = useState(false);
-    const profilePhotoUrl = profile?.documents.find(
-        (document) => document.type === 'PROFILE_PHOTO',
-    )?.fileUrl;
-
-    useEffect(() => {
-        const controller = new AbortController();
-        void fetchProviderProfile(token ?? '', controller.signal)
-            .then((result) => {
-                setProfile(result);
-                setHasPhotoError(false);
-            })
-            .catch((requestError: unknown) => {
-                if (!controller.signal.aborted) {
-                    console.error('Unable to load provider profile:', requestError);
-                    setError(
-                        requestError instanceof Error
-                            ? requestError.message
-                            : 'Could not load your profile. Please try again.',
-                    );
-                }
-            })
-            .finally(() => {
-                if (!controller.signal.aborted) {
-                    setIsLoading(false);
-                }
-            });
-        return () => controller.abort();
-    }, [retryCount, token]);
-
-    const retryProfileLoad = useCallback(() => {
-        setIsLoading(true);
-        setError(undefined);
-        setRetryCount((count) => count + 1);
-    }, []);
+    const profile = DUMMY_PROFILE;
 
     const openSettings = () => navigation.navigate('ProviderSettings', { profile: profile ?? undefined });
     const goToJobs = () => {
@@ -139,6 +113,7 @@ const ProviderProfileScreen = () => {
                 >
                     <ChevronIcon />
                 </Pressable>
+                <AppText style={styles.headerTitle}>Profile</AppText>
                 <Pressable
                     accessibilityRole="button"
                     accessibilityLabel="Open settings"
@@ -153,44 +128,11 @@ const ProviderProfileScreen = () => {
                 contentContainerStyle={styles.content}
                 showsVerticalScrollIndicator={false}
             >
-                {isLoading && !profile ? (
-                    <View style={styles.stateContainer}>
-                        <ActivityIndicator size="large" color={Colors.primaryDark} />
-                        <AppText style={styles.stateMessage}>Loading your profile…</AppText>
-                    </View>
-                ) : error && !profile ? (
-                    <View style={styles.stateContainer} accessibilityRole="alert">
-                        <AppText style={styles.stateTitle}>Profile unavailable</AppText>
-                        <AppText style={styles.stateMessage}>{error}</AppText>
-                        <Pressable
-                            accessibilityRole="button"
-                            onPress={retryProfileLoad}
-                            style={({ pressed }) => [styles.retryButton, pressed && styles.pressed]}
-                        >
-                            <AppText style={styles.retryText}>Try Again</AppText>
-                        </Pressable>
-                    </View>
-                ) : profile ? (
-                    <>
-                        {error ? (
-                            <Pressable
-                                accessibilityRole="button"
-                                onPress={retryProfileLoad}
-                                style={styles.inlineError}
-                            >
-                                <AppText style={styles.inlineErrorText}>{error}  Tap to retry.</AppText>
-                            </Pressable>
-                        ) : null}
-
+                <>
                         <View style={styles.profileSummary}>
                             <View style={styles.avatarFrame}>
                                 <Image
-                                    source={
-                                        profilePhotoUrl && !hasPhotoError
-                                            ? { uri: profilePhotoUrl }
-                                            : FALLBACK_AVATAR
-                                    }
-                                    onError={() => setHasPhotoError(true)}
+                                    source={FALLBACK_AVATAR}
                                     style={styles.avatar}
                                     resizeMode="cover"
                                     accessibilityLabel={`${PROFILE_NAME} profile photo`}
@@ -229,7 +171,9 @@ const ProviderProfileScreen = () => {
                         <View style={styles.section}>
                             <AppText style={styles.sectionTitle}>Skills &amp; Services</AppText>
                             <View style={styles.skills}>
-                                {SKILLS.map((skill) => <ProviderSkillChip key={skill} label={skill} />)}
+                                {profile.categories.map(({ id, name }) => (
+                                    <ProviderSkillChip key={id} label={name} />
+                                ))}
                             </View>
                         </View>
 
@@ -251,8 +195,7 @@ const ProviderProfileScreen = () => {
                                 </AppText>
                             </View>
                         </View>
-                    </>
-                ) : null}
+                </>
             </ScrollView>
 
             <View style={styles.footer}>
@@ -286,6 +229,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: RS(22),
     },
+    headerTitle: {
+        position: 'absolute',
+        left: RS(70),
+        right: RS(70),
+        color: NAVY,
+        fontSize: FontSize.pageTitle,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
     headerButton: {
         width: RS(42),
         height: RS(42),
@@ -296,51 +248,8 @@ const styles = StyleSheet.create({
     content: {
         flexGrow: 1,
         paddingHorizontal: RS(22),
-        paddingTop: RS(3),
+        paddingTop: RS(30),
         paddingBottom: RS(12),
-    },
-    stateContainer: {
-        minHeight: RS(400),
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: RS(12),
-    },
-    stateTitle: {
-        color: NAVY,
-        fontSize: RS(21),
-        fontWeight: '700',
-        textAlign: 'center',
-    },
-    stateMessage: {
-        color: Colors.textSecondary,
-        fontSize: RS(15),
-        textAlign: 'center',
-        marginTop: RS(10),
-    },
-    retryButton: {
-        minHeight: RS(46),
-        minWidth: RS(130),
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: Radii.pill,
-        backgroundColor: DEEP_BLUE,
-        marginTop: RS(18),
-        paddingHorizontal: RS(18),
-    },
-    retryText: {
-        color: Colors.white,
-        fontSize: RS(15),
-        fontWeight: '600',
-    },
-    inlineError: {
-        borderRadius: RS(12),
-        backgroundColor: Colors.failedLight,
-        padding: RS(12),
-        marginBottom: RS(10),
-    },
-    inlineErrorText: {
-        color: Colors.failed,
-        fontSize: RS(13),
     },
     profileSummary: {
         alignItems: 'center',
@@ -348,8 +257,8 @@ const styles = StyleSheet.create({
         paddingBottom: RS(17),
     },
     avatarFrame: {
-        width: RS(90),
-        height: RS(90),
+        width: RS(120),
+        height: RS(120),
         borderWidth: RS(3),
         borderColor: '#D2DCEB',
         borderRadius: Radii.pill,
@@ -376,25 +285,24 @@ const styles = StyleSheet.create({
     },
     verifiedText: {
         color: '#168267',
-        fontSize: RS(13),
+        fontSize: RF(12),
         fontWeight: '500',
     },
     name: {
         maxWidth: '100%',
         color: NAVY,
-        fontSize: RS(23),
+        fontSize: RF(23),
         lineHeight: RS(31),
         fontWeight: '700',
         textAlign: 'center',
-        marginTop: RS(15),
+        marginTop: RS(5),
     },
     profession: {
         color: NAVY,
-        fontSize: RS(17),
+        fontSize: RF(17),
         lineHeight: RS(24),
         textAlign: 'center',
-        marginTop: RS(2),
-    },
+     },
     rating: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -403,13 +311,13 @@ const styles = StyleSheet.create({
     },
     ratingValue: {
         color: NAVY,
-        fontSize: RS(16),
+        fontSize: RF(16),
         lineHeight: RS(22),
         fontWeight: '700',
     },
     reviewCount: {
         color: NAVY,
-        fontSize: RS(15),
+        fontSize: RF(15),
         lineHeight: RS(22),
     },
     statsCard: {
@@ -432,13 +340,13 @@ const styles = StyleSheet.create({
     },
     statValue: {
         color: NAVY,
-        fontSize: RS(19),
+        fontSize: RF(19),
         lineHeight: RS(25),
         fontWeight: '700',
     },
     statLabel: {
         color: NAVY,
-        fontSize: RS(12),
+        fontSize: RF(12),
         lineHeight: RS(17),
         textAlign: 'center',
         marginTop: RS(2),
@@ -453,7 +361,7 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: NAVY,
-        fontSize: RS(17),
+        fontSize: RF(17),
         lineHeight: RS(24),
         fontWeight: '700',
         marginBottom: RS(9),
@@ -471,7 +379,7 @@ const styles = StyleSheet.create({
     },
     viewAll: {
         color: NAVY,
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(20),
         marginBottom: RS(9),
     },
@@ -488,14 +396,14 @@ const styles = StyleSheet.create({
     },
     emptyHistoryTitle: {
         color: NAVY,
-        fontSize: RS(15),
+        fontSize: RF(15),
         lineHeight: RS(22),
         fontWeight: '600',
         textAlign: 'center',
     },
     emptyHistoryMessage: {
         color: Colors.textSecondary,
-        fontSize: RS(13),
+        fontSize: RF(13),
         lineHeight: RS(19),
         textAlign: 'center',
         marginTop: RS(3),
@@ -517,7 +425,7 @@ const styles = StyleSheet.create({
     },
     editText: {
         color: Colors.white,
-        fontSize: RS(16),
+        fontSize: RF(16),
         lineHeight: RS(23),
         fontWeight: '600',
     },

@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 type Props = {
     onBackPress: () => void;
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     },
     brandText: {
         color: Colors.primaryDark,
-        fontSize: RS(21),
+        fontSize: RF(21),
         fontWeight: '700',
     },
 });

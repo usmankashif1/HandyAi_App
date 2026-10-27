@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import type { ProviderPayout } from '../earnings.types';
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 const PayoutRow = ({ payout, isLast }: Props) => (
     <View style={[styles.row, !isLast && styles.withDivider]}>
         <View style={styles.iconContainer}>
-            <Svg width={RS(22)} height={RS(22)} viewBox="0 0 24 24">
+            <Svg width={RS(24)} height={RS(24)} viewBox="0 0 24 24">
                 <Rect
                     x="5"
                     y="3"
@@ -48,7 +48,7 @@ export default PayoutRow;
 
 const styles = StyleSheet.create({
     row: {
-        minHeight: RS(55),
+        minHeight: RS(65),
         flexDirection: 'row',
         alignItems: 'center',
         gap: RS(8),
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
         borderBottomColor: Colors.primaryLight,
     },
     iconContainer: {
-        width: RS(35),
-        height: RS(35),
+        width: RS(38),
+        height: RS(38),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: RS(18),
@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     },
     date: {
         flex: 1,
-        color: Colors.primaryDark,
-        fontSize: RS(14),
+        color: Colors.black,
+        fontSize: RF(16),
     },
     amountGroup: {
         flexDirection: 'row',
@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
         gap: RS(4),
     },
     amount: {
-        color: Colors.primaryDark,
-        fontSize: RS(14),
+        color: Colors.black,
+        fontSize: RF(16),
         fontWeight: '600',
     },
     provider: {
         color: Colors.textSecondary,
-        fontSize: RS(11),
+        fontSize: RF(12),
     },
     statusBadge: {
         minWidth: RS(44),
@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
     },
     statusText: {
         color: Colors.secondary,
-        fontSize: RS(12),
+        fontSize: RF(14),
     },
 });

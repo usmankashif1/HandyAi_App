@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import AppText from '../../../../../components/AppText';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 export type ProviderSettingIcon =
     | 'personal'
@@ -84,7 +84,7 @@ const ProviderSettingRow = ({ icon, title, detail, onPress }: ProviderSettingRow
             <AppText style={styles.title}>{title}</AppText>
             <AppText style={styles.detail}>{detail}</AppText>
         </View>
-        <Svg width={RS(22)} height={RS(22)} viewBox="0 0 24 24">
+        <Svg width={RS(24)} height={RS(24)} viewBox="0 0 24 24">
             <Path
                 d="m9 5 7 7-7 7"
                 fill="none"
@@ -132,13 +132,13 @@ const styles = StyleSheet.create({
     },
     title: {
         color: NAVY,
-        fontSize: RS(17),
+        fontSize: RF(18),
         lineHeight: RS(23),
-        fontWeight: '600',
+        fontWeight: '700',
     },
     detail: {
         color: '#17212E',
-        fontSize: RS(15),
+        fontSize: RF(14),
         lineHeight: RS(21),
     },
 });

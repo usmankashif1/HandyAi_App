@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AppText from '../../../../../components/AppText';
 import { Colors } from '../../../../../core/theme/colors';
 import { FontSize, Spacing } from '../../../../../core/theme/designTokens';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 import { showSuccessToast } from '../../../../../core/utils/toast';
 import { useAppDispatch, useAppSelector } from '../../../../../store/hooks';
 import { loadUserProfile, saveUserProfile } from '../../../../../store/slices/profileSlice';
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     },
     backArrow: {
         color: Colors.textPrimary,
-        fontSize: RS(36),
+        fontSize: RF(36),
         lineHeight: RS(40),
     },
     title: {

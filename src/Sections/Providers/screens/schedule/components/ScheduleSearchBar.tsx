@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Circle, Path, Polygon } from 'react-native-svg';
 import { Colors } from '../../../../../core/theme/colors';
-import { RS } from '../../../../../core/utils/responsive';
+import { RF, RS } from '../../../../../core/utils/responsive';
 
 type Props = {
     query: string;
@@ -18,7 +18,7 @@ const ScheduleSearchBar = ({
 }: Props) => (
     <View style={styles.container}>
         <View style={styles.inputContainer}>
-            <Svg width={RS(19)} height={RS(19)} viewBox="0 0 24 24">
+            <Svg width={RS(25)} height={RS(25)} viewBox="0 0 24 24">
                 <Circle
                     cx="10.8"
                     cy="10.8"
@@ -53,11 +53,11 @@ const ScheduleSearchBar = ({
             hitSlop={6}
             style={styles.filterButton}
         >
-            <Svg width={RS(21)} height={RS(21)} viewBox="0 0 24 24">
+            <Svg width={RS(25)} height={RS(25)} viewBox="0 0 24 24">
                 <Polygon
                     points="3,5 21,5 14,13 14,20 10,22 10,13"
                     fill="none"
-                    stroke={Colors.primaryDark}
+                    stroke={Colors.black}
                     strokeWidth="1.7"
                     strokeLinejoin="round"
                 />
@@ -76,28 +76,33 @@ const styles = StyleSheet.create({
         gap: RS(9),
     },
     inputContainer: {
-        minHeight: RS(42),
+        minHeight: RS(52),
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         gap: RS(8),
-        borderRadius: RS(9),
+        borderRadius: RS(12),
+        borderWidth: RS(1),
+        borderColor: Colors.border,
         backgroundColor: Colors.white,
         paddingHorizontal: RS(11),
     },
     input: {
         flex: 1,
-        minHeight: RS(42),
+        minHeight: RS(52),
         color: Colors.textPrimary,
-        fontSize: RS(14),
+        fontSize: RF(16),
         paddingVertical: 0,
+
     },
     filterButton: {
-        width: RS(42),
-        height: RS(42),
+        width: RS(55),
+        height: RS(52),
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: RS(9),
+        borderRadius: RS(12),
+        borderWidth: RS(1),
+        borderColor: Colors.border,
         backgroundColor: Colors.white,
     },
     filterIndicator: {
