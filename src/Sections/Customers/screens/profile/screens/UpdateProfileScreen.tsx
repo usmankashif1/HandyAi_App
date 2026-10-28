@@ -138,9 +138,9 @@ const ProfileEditor = ({ profile, token, onSaved }: ProfileEditorProps) => {
                 accessToken: token,
                 updates: {
                     fullName: values.fullName.trim(),
-                    address: values.address.trim() || null,
-                    postcode: values.postcode.trim() || null,
-                    householdNotes: values.householdNotes.trim() || null,
+                    address: values.address.trim(),
+                    postcode: values.postcode.trim(),
+                    householdNotes: values.householdNotes.trim(),
                 },
             })).unwrap();
             showSuccessToast('Profile updated');

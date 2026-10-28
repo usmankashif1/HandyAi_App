@@ -1,4 +1,5 @@
 import { API_URL } from '../../../../core/utils/config';
+import { notifySessionExpired } from '../../../../core/api/sessionExpiry';
 import type { UpdateProfileRequest, UserProfile } from './profile.types';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => (
@@ -43,6 +44,21 @@ const isUserProfile = (value: unknown): value is UserProfile => (
     && typeof value.updatedAt === 'string'
 );
 
+const userProfileFromResponse = (body: unknown): UserProfile | undefined => {
+    let candidate = body;
+    if (isRecord(candidate) && isRecord(candidate.data)) {
+        candidate = candidate.data;
+    }
+    if (isRecord(candidate) && isRecord(candidate.user)) {
+        candidate = candidate.user;
+    }
+    if (isRecord(candidate) && isRecord(candidate.profile)) {
+        candidate = candidate.profile;
+    }
+
+    return isUserProfile(candidate) ? candidate : undefined;
+};
+
 const getApiBaseUrl = (): string => {
     const baseUrl = API_URL?.trim().replace(/\/+$/, '');
     if (!baseUrl) {
@@ -86,6 +102,9 @@ export const fetchUserProfile = async (
         },
         signal,
     });
+    if (response.status === 401) {
+        notifySessionExpired(token);
+    }
     const body = await parseResponseBody(response);
 
     if (!response.ok) {
@@ -94,11 +113,12 @@ export const fetchUserProfile = async (
         );
     }
 
-    if (!isUserProfile(body)) {
+    const profile = userProfileFromResponse(body);
+    if (!profile) {
         throw new Error('The server returned incomplete profile data. Please try again.');
     }
 
-    return body;
+    return profile;
 };
 
 export const updateUserProfile = async (
@@ -121,6 +141,9 @@ export const updateUserProfile = async (
         body: JSON.stringify(updates),
         signal,
     });
+    if (response.status === 401) {
+        notifySessionExpired(token);
+    }
     const body = await parseResponseBody(response);
 
     if (!response.ok) {
@@ -129,9 +152,10 @@ export const updateUserProfile = async (
         );
     }
 
-    if (!isUserProfile(body)) {
+    const profile = userProfileFromResponse(body);
+    if (!profile) {
         throw new Error('The server returned incomplete profile data after the update. Please try again.');
     }
 
-    return body;
+    return profile;
 };

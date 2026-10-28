@@ -51,6 +51,7 @@ const profileSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(signOut.pending, () => initialState)
             .addCase(loadUserProfile.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;

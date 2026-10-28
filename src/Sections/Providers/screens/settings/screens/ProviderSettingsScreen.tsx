@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
@@ -17,7 +17,9 @@ import { showErrorToast, showInfoToast } from '../../../../../core/utils/toast';
 import { RF, RS } from '../../../../../core/utils/responsive';
 import { useAppDispatch, useAppSelector } from '../../../../../store/hooks';
 import { signOut } from '../../../../../store/slices/authSlice';
+import { setProviderProfile } from '../../../../../store/slices/providerProfileSlice';
 import type { ProviderProfileStackParamList } from '../../profile/profile.types';
+import { fetchProviderProfile, type ProviderProfile } from '../../profile/providerProfile.api';
 import ProviderSettingRow, { type ProviderSettingIcon } from '../components/ProviderSettingRow';
 
 type Props = NativeStackScreenProps<ProviderProfileStackParamList, 'ProviderSettings'>;
@@ -27,32 +29,87 @@ const SETTINGS: {
     title: string;
     detail: string;
 }[] = [
-    { icon: 'personal', title: 'Personal Information', detail: 'Update your details' },
-    { icon: 'areas', title: 'Service Areas', detail: 'Manage your coverage radius' },
-    { icon: 'availability', title: 'Availability', detail: 'Set your working hours' },
-    { icon: 'documents', title: 'Documents', detail: 'View & manage your documents' },
-    { icon: 'payment', title: 'Payment Details', detail: 'Stripe Connect' },
-    { icon: 'support', title: 'Support', detail: 'Get help or contact support' },
+    { icon: 'personal', title: 'Personal Information', detail: 'View your personal details' },
+    { icon: 'areas', title: 'Service Areas', detail: 'View your covered postcodes' },
+    { icon: 'availability', title: 'Availability', detail: 'View your working days and hours' },
+    { icon: 'documents', title: 'Documents', detail: 'View your submitted documents' },
+    { icon: 'payment', title: 'Payment Details', detail: 'View your Stripe account status' },
 ];
 
 const ProviderSettingsScreen = ({ navigation, route }: Props) => {
     const dispatch = useAppDispatch();
-    const { profile } = route.params ?? {};
-    const { account } = useAppSelector((state) => state.auth);
+    const routeProfile = route.params?.profile;
+    const { token } = useAppSelector((state) => state.auth);
+    const cachedProfile = useAppSelector((state) => state.providerProfile.profile);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const availabilitySummary = profile?.availability
-        .map((item) => `${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][item.dayOfWeek] ?? 'Day'} ${item.startTime.slice(0, 5)}-${item.endTime.slice(0, 5)}`)
-        .join(', ');
-    const documentSummary = profile?.documents
-        .map((document) => `${document.type.split('_').join(' ')}: ${document.status.toLowerCase()}`)
-        .join('\n');
-    const settingDetails: Record<string, string> = {
-        'Personal Information': account?.email || 'Update your details',
-        'Service Areas': profile?.postcodeCoverage.join(', ') || 'Manage your coverage radius',
-        Availability: availabilitySummary || 'Set your working hours',
-        Documents: profile
-            ? `${profile.documents.length} documents · ${profile.status.toLowerCase()} review`
-            : 'View & manage your documents',
+    const [loadedProfile, setLoadedProfile] = useState<ProviderProfile>();
+    const profile = cachedProfile ?? routeProfile ?? loadedProfile;
+    const [profileError, setProfileError] = useState<string>();
+    const [isProfileLoading, setIsProfileLoading] = useState(!routeProfile);
+
+    useEffect(() => {
+        if (routeProfile) {
+            return undefined;
+        }
+
+        const controller = new AbortController();
+        void fetchProviderProfile(token ?? '', controller.signal)
+            .then((loadedProfile) => {
+                setLoadedProfile(loadedProfile);
+                dispatch(setProviderProfile(loadedProfile));
+                setProfileError(undefined);
+            })
+            .catch((error: unknown) => {
+                if (!controller.signal.aborted) {
+                    setProfileError(
+                        error instanceof Error
+                            ? error.message
+                            : 'Could not load provider profile. Please try again.',
+                    );
+                }
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) {
+                    setIsProfileLoading(false);
+                }
+            });
+
+        return () => controller.abort();
+    }, [dispatch, routeProfile, token]);
+
+    const openSetting = (title: string) => {
+        if (isProfileLoading) {
+            showInfoToast(title, 'Loading provider profile...');
+            return;
+        }
+        if (profileError) {
+            showInfoToast(title, profileError);
+            return;
+        }
+        if (!profile) {
+            showInfoToast(title, 'Provider profile data is unavailable.');
+            return;
+        }
+
+        switch (title) {
+            case 'Personal Information':
+                navigation.navigate('ProviderPersonalInformation', { profile });
+                break;
+            case 'Service Areas':
+                navigation.navigate('ProviderServiceAreas', { profile });
+                break;
+            case 'Availability':
+                navigation.navigate('ProviderAvailability', { profile });
+                break;
+            case 'Documents':
+                navigation.navigate('ProviderDocuments', { profile });
+                break;
+            case 'Payment Details':
+                navigation.navigate('ProviderPaymentDetails', { profile });
+                break;
+            default:
+                break;
+        }
     };
 
     const confirmLogout = () => {
@@ -117,14 +174,7 @@ const ProviderSettingsScreen = ({ navigation, route }: Props) => {
                         <ProviderSettingRow
                             key={item.title}
                             {...item}
-                            detail={settingDetails[item.title] ?? item.detail}
-                            onPress={() => {
-                                if (item.title === 'Documents' && documentSummary) {
-                                    showInfoToast('Submitted documents', documentSummary);
-                                    return;
-                                }
-                                showInfoToast(item.title, 'This setting is not available yet.');
-                            }}
+                            onPress={() => openSetting(item.title)}
                         />
                     ))}
                 </View>

@@ -1,4 +1,5 @@
 import type { DocumentPickerAsset } from 'expo-document-picker';
+import { notifySessionExpired } from '../../../../core/api/sessionExpiry';
 import { API_URL } from '../../../../core/utils/config';
 
 export type ProviderCategory = {
@@ -27,6 +28,7 @@ export type ProviderDocumentKey =
     | 'PROFILE_PHOTO';
 
 export type ProviderDocuments = Record<ProviderDocumentKey, DocumentPickerAsset>;
+export type ProviderDocumentSelection = Partial<Record<ProviderDocumentKey, DocumentPickerAsset>>;
 
 type ReactNativeFilePart = {
     uri: string;
@@ -147,6 +149,9 @@ export const fetchProviderCategories = async (
         },
         signal,
     });
+    if (response.status === 401) {
+        notifySessionExpired(accessToken.trim());
+    }
     const body = await readResponse(response);
 
     if (!response.ok) {
@@ -186,6 +191,9 @@ export const submitProviderOnboarding = async (
         },
         body: JSON.stringify(onboarding),
     });
+    if (response.status === 401) {
+        notifySessionExpired(accessToken.trim());
+    }
     const body = await readResponse(response);
 
     if (!response.ok) {
@@ -228,6 +236,9 @@ const uploadFormData = (
     request.setRequestHeader('Authorization', getAuthorizationHeader(accessToken));
     request.onload = () => {
         const isSuccessful = request.status >= 200 && request.status < 300;
+        if (request.status === 401) {
+            notifySessionExpired(accessToken.trim());
+        }
         let body: unknown;
 
         if (request.responseText) {
@@ -263,13 +274,21 @@ const uploadFormData = (
 
 export const uploadProviderDocuments = async (
     accessToken: string,
-    documents: ProviderDocuments,
+    documents: ProviderDocumentSelection,
 ): Promise<void> => {
+    const selectedKeys = Object.keys(documents) as ProviderDocumentKey[];
+    if (selectedKeys.length === 0) {
+        throw new Error('Select at least one document before uploading.');
+    }
+
     const formData = new FormData();
     const reactNativeFormData = formData as ReactNativeMultipartFormData;
 
-    (Object.keys(documents) as ProviderDocumentKey[]).forEach((key) => {
+    selectedKeys.forEach((key) => {
         const asset = documents[key];
+        if (!asset) {
+            return;
+        }
         if (asset.file) {
             formData.append(key, asset.file, asset.name);
         } else {

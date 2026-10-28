@@ -8,8 +8,7 @@ export type ProviderSettingIcon =
     | 'areas'
     | 'availability'
     | 'documents'
-    | 'payment'
-    | 'support';
+    | 'payment';
 
 type ProviderSettingRowProps = {
     icon: ProviderSettingIcon;
@@ -59,11 +58,6 @@ const SettingIcon = ({ name }: { name: ProviderSettingIcon }) => {
                 <>
                     <Rect x="3" y="6" width="26" height="20" rx="3" {...common} />
                     <Path d="M4 12h24m-18 8h7" {...common} />
-                </>
-            ) : null}
-            {name === 'support' ? (
-                <>
-                    <Path d="M5 17v-4a11 11 0 0 1 22 0v4m-22 0H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h4v-8H5Zm22 0h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4v-8h3Zm0 6c0 3-3 4-7 4m-2 0h2" {...common} />
                 </>
             ) : null}
         </Svg>

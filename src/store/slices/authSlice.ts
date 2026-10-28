@@ -72,6 +72,15 @@ const authSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(signOut.pending, (state) => {
+                state.token = null;
+                state.role = 'CUSTOMER';
+                state.account = null;
+                state.shouldStartSetup = false;
+                state.shouldStartProviderSetup = false;
+                state.isLoading = false;
+                state.initializationError = null;
+            })
             .addCase(restoreAccessToken.pending, (state) => {
                 state.isLoading = true;
                 state.initializationError = null;
