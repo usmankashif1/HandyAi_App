@@ -225,8 +225,7 @@ const ProviderProfileScreen = () => {
                             <AppText style={styles.infoLabel}>Profile status</AppText>
                             <AppText style={styles.infoValue}>{formatStatus(profile.status)}</AppText>
                             <View style={styles.divider} />
-                            <AppText style={styles.infoLabel}>User ID</AppText>
-                            <AppText style={styles.infoValue}>{profile.userId}</AppText>
+                             
                             {profile.rejectionReason ? (
                                 <>
                                     <View style={styles.divider} />

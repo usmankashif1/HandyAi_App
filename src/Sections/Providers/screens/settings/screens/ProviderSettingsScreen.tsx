@@ -29,12 +29,12 @@ const SETTINGS: {
     title: string;
     detail: string;
 }[] = [
-    { icon: 'personal', title: 'Personal Information', detail: 'View your personal details' },
-    { icon: 'areas', title: 'Service Areas', detail: 'View your covered postcodes' },
-    { icon: 'availability', title: 'Availability', detail: 'View your working days and hours' },
-    { icon: 'documents', title: 'Documents', detail: 'View your submitted documents' },
-    { icon: 'payment', title: 'Payment Details', detail: 'View your Stripe account status' },
-];
+        { icon: 'personal', title: 'Personal Information', detail: 'View your personal details' },
+        { icon: 'areas', title: 'Service Areas', detail: 'View your covered postcodes' },
+        { icon: 'availability', title: 'Availability', detail: 'View your working days and hours' },
+        { icon: 'documents', title: 'Documents', detail: 'View your submitted documents' },
+        { icon: 'payment', title: 'Payment Details', detail: 'View your Stripe account status' },
+    ];
 
 const ProviderSettingsScreen = ({ navigation, route }: Props) => {
     const dispatch = useAppDispatch();
