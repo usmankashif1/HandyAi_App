@@ -1,5 +1,5 @@
 import { FontSize } from '../../../../../core/theme/designTokens';
-import { Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import AppButton from '../../../../../components/AppButton';
 import AppText from '../../../../../components/AppText';
@@ -24,58 +24,117 @@ const TrustedProviderIcon = () => (
     </Svg>
 );
 
-const HistoryBookingCard = ({ booking, compact, isTrusted, onToggleTrusted }: Props) => (
-    <Container style={styles.card}>
-        <Container style={styles.details}>
-            <Image
-                source={{ uri: booking.image }}
-                style={[styles.image, compact && styles.compactImage]}
-                resizeMode="cover"
-                accessibilityLabel={`${booking.service} service`}
-            />
-            <Container style={styles.info}>
-                <Container style={styles.heading}>
-                    <AppText style={[styles.serviceName, compact && styles.compactServiceName]} numberOfLines={2}>
-                        {booking.service}
-                    </AppText>
-                    <AppText style={[styles.price, compact && styles.compactPrice]}>{booking.price}</AppText>
-                </Container>
-                <Container style={styles.dateStatusRow}>
-                    <AppText style={[styles.date, compact && styles.compactDate]} numberOfLines={1}>
-                        {booking.date}
-                    </AppText>
-                    <Container style={styles.statusBadge}>
-                        <AppText style={styles.statusText}>{booking.status}</AppText>
-                    </Container>
-                </Container>
-                <AppText style={[styles.provider, compact && styles.compactProvider]} numberOfLines={1}>
-                    {booking.provider}
-                </AppText>
-            </Container>
-        </Container>
+const getStatusColors = (status: string) => {
+    const normalizedStatus = status.toLowerCase();
+    if (normalizedStatus.includes('cancel') || normalizedStatus.includes('fail')) {
+        return { backgroundColor: Colors.failedLight, borderColor: '#F3CACA', color: Colors.failed };
+    }
+    if (normalizedStatus.includes('confirm') || normalizedStatus.includes('pending')) {
+        return { backgroundColor: Colors.warningLight, borderColor: '#F0D8AA', color: Colors.warning };
+    }
+    if (normalizedStatus.includes('complete')) {
+        return { backgroundColor: Colors.successLight, borderColor: '#D2E9DF', color: Colors.success };
+    }
+    return { backgroundColor: '#F2F1EE', borderColor: '#DFDDDA', color: Colors.textSecondary };
+};
 
-        <AppButton
-            style={({ pressed }) => [
-                styles.trustedButton,
-                compact && styles.compactTrustedButton,
-                pressed && styles.trustedButtonPressed,
-            ]}
-            onPress={onToggleTrusted}
-            accessibilityRole="button"
-            accessibilityLabel={
-                isTrusted
-                    ? `${booking.provider} saved as trusted provider`
-                    : `Save ${booking.provider} as trusted provider`
-            }
-            accessibilityState={{ selected: isTrusted }}
-        >
-            <TrustedProviderIcon />
-            <AppText style={[styles.trustedButtonText, compact && styles.compactTrustedButtonText]}>
-                {isTrusted ? 'Trusted Provider' : 'Save as Trusted Provider'}
-            </AppText>
-        </AppButton>
-    </Container>
-);
+const HistoryBookingCard = ({ booking, compact, isTrusted, onToggleTrusted }: Props) => {
+    const statusColors = getStatusColors(booking.status);
+
+    return (
+        <Container style={styles.card}>
+            <Container style={styles.details}>
+                {booking.image ? (
+                    <Image
+                        source={{ uri: booking.image }}
+                        style={[styles.image, compact && styles.compactImage]}
+                        resizeMode="cover"
+                        accessibilityLabel={`${booking.service} service`}
+                    />
+                ) : (
+                    <View
+                        accessible={false}
+                        style={[styles.imagePlaceholder, compact && styles.compactImage]}
+                    >
+                        <Svg width={28} height={28} viewBox="0 0 24 24">
+                            <Path
+                                d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"
+                                fill="none"
+                                stroke={Colors.primaryDark}
+                                strokeWidth={1.6}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </Svg>
+                    </View>
+                )}
+                <Container style={styles.info}>
+                    <Container style={styles.heading}>
+                        <AppText
+                            style={[styles.serviceName, compact && styles.compactServiceName]}
+                            numberOfLines={2}
+                        >
+                            {booking.service}
+                        </AppText>
+                        <AppText style={[styles.price, compact && styles.compactPrice]}>
+                            {booking.price}
+                        </AppText>
+                    </Container>
+                    <Container style={styles.dateStatusRow}>
+                        <AppText
+                            style={[styles.date, compact && styles.compactDate]}
+                            numberOfLines={1}
+                        >
+                            {booking.date}
+                        </AppText>
+                        <Container
+                            style={[
+                                styles.statusBadge,
+                                {
+                                    backgroundColor: statusColors.backgroundColor,
+                                    borderColor: statusColors.borderColor,
+                                },
+                            ]}
+                        >
+                            <AppText style={[styles.statusText, { color: statusColors.color }]}>
+                                {booking.status}
+                            </AppText>
+                        </Container>
+                    </Container>
+                    <AppText
+                        style={[styles.provider, compact && styles.compactProvider]}
+                        numberOfLines={1}
+                    >
+                        {booking.provider}
+                    </AppText>
+                </Container>
+            </Container>
+
+            <AppButton
+                style={({ pressed }) => [
+                    styles.trustedButton,
+                    compact && styles.compactTrustedButton,
+                    pressed && styles.trustedButtonPressed,
+                ]}
+                onPress={onToggleTrusted}
+                accessibilityRole="button"
+                accessibilityLabel={
+                    isTrusted
+                        ? `${booking.provider} saved as trusted provider`
+                        : `Save ${booking.provider} as trusted provider`
+                }
+                accessibilityState={{ selected: isTrusted }}
+            >
+                <TrustedProviderIcon />
+                <AppText
+                    style={[styles.trustedButtonText, compact && styles.compactTrustedButtonText]}
+                >
+                    {isTrusted ? 'Trusted Provider' : 'Save as Trusted Provider'}
+                </AppText>
+            </AppButton>
+        </Container>
+    );
+};
 
 export default HistoryBookingCard;
 
@@ -98,6 +157,14 @@ const styles = StyleSheet.create({
         height: RS(76),
         borderRadius: RS(12),
         backgroundColor: '#E7E4DC',
+    },
+    imagePlaceholder: {
+        width: RS(68),
+        height: RS(76),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: RS(12),
+        backgroundColor: Colors.primaryLight,
     },
     compactImage: {
         width: RS(56),
@@ -152,12 +219,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: RS(9),
         paddingVertical: RS(4),
         borderWidth: 1,
-        borderColor: '#D2E9DF',
         borderRadius: RS(999),
-        backgroundColor: '#E3F3EC',
     },
     statusText: {
-        color: '#24694B',
         fontSize: FontSize.bodySmall,
         lineHeight: RS(18),
     },
